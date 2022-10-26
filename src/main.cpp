@@ -7,5 +7,5 @@ using namespace Nata;
 
 int main(int argc, char** argv)
 {
-	Exercises::HelloTriangle_0();
+	Exercises::Textures_1();
 }

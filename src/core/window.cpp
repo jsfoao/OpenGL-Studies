@@ -65,7 +65,7 @@ namespace Nata
 
 	void Window::Clear() const
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	bool Window::Closed() const
@@ -79,7 +79,6 @@ namespace Nata
 		if (error != GL_NO_ERROR)
 		{
 			std::cout << "OpenGL error: " << error << std::endl;
-			exit(0);
 		}
 
 		// Checks if any events are triggered (keyboard input or mouse inpit)

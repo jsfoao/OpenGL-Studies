@@ -84,58 +84,53 @@ namespace Nata
 		glUseProgram(NULL);
 	}
 
-	unsigned int Shader::GetUniformLocation(const char* name)
-	{
-		return glGetUniformLocation(m_ShaderID, name);
-	}
-
 	void Shader::SetUniform1f(const char* name, const float value)
 	{
-		glUniform1f(GetUniformLocation(name), value);
+		glUniform1f(glGetUniformLocation(m_ShaderID, name), value);
 	}
 
-	void Shader::SetUniform1i(const char* name, int value)
+	void Shader::SetUniform1i(const char* name, const int value)
 	{
-		glUniform1f(GetUniformLocation(name), value);
+		glUniform1i(glGetUniformLocation(m_ShaderID, name), value);
 	}
 
 	void Shader::SetUniform2f(const char* name, Vector2& v)
 	{
-		glUniform2f(GetUniformLocation(name), v.x, v.y);
+		glUniform2f(glGetUniformLocation(m_ShaderID, name), v.x, v.y);
 	}
 
 	void Shader::SetUniform2f(const char* name, Vector2 v)
 	{
-		glUniform2f(GetUniformLocation(name), v.x, v.y);
+		glUniform2f(glGetUniformLocation(m_ShaderID, name), v.x, v.y);
 	}
 
 	void Shader::SetUniform3f(const char* name, Vector3& v)
 	{
-		glUniform3f(GetUniformLocation(name), v.x, v.y, v.z);
+		glUniform3f(glGetUniformLocation(m_ShaderID, name), v.x, v.y, v.z);
 	}
 
 	void Shader::SetUniform4f(const char* name, Vector4& v)
 	{
-		glUniform4f(GetUniformLocation(name), v.x, v.y, v.z, v.w);
+		glUniform4f(glGetUniformLocation(m_ShaderID, name), v.x, v.y, v.z, v.w);
 	}
 
 	void Shader::SetUniform2f(const char* name, float v0, float v1)
 	{
-		glUniform2f(GetUniformLocation(name), v0, v1);
+		glUniform2f(glGetUniformLocation(m_ShaderID, name), v0, v1);
 	}
 
 	void Shader::SetUniform3f(const char* name, float v0, float v1, float v2)
 	{
-		glUniform3f(GetUniformLocation(name), v0, v1, v2);
+		glUniform3f(glGetUniformLocation(m_ShaderID, name), v0, v1, v2);
 	}
 
 	void Shader::SetUniform4f(const char* name, float v0, float v1, float v2, float v3)
 	{
-		glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
+		glUniform4f(glGetUniformLocation(m_ShaderID, name), v0, v1, v2, v3);
 	}
 
 	void Shader::SetUniformMat4(const char* name, Matrix4& matrix)
 	{
-		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, matrix.elements);
+		glUniformMatrix4fv(glGetUniformLocation(m_ShaderID, name), 1, GL_FALSE, matrix.elements);
 	}
 }

@@ -47,8 +47,5 @@ namespace Nata
 		/// Creates program and attaches shaders to it. Returns program id
 		/// </summary>
 		unsigned int Load();
-
-	private:
-		unsigned int GetUniformLocation(const char* name);
 	};
 }
