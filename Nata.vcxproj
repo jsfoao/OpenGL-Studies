@@ -145,9 +145,13 @@
     <None Include="bin\zlib1.dll" />
     <None Include="src\shaders\basic.frag" />
     <None Include="src\shaders\basic.vert" />
+    <None Include="src\shaders\coordinates.frag" />
+    <None Include="src\shaders\coordinates.vert" />
     <None Include="src\shaders\test.frag" />
     <None Include="src\shaders\test.vert" />
     <None Include="src\shaders\test2.frag" />
+    <None Include="src\shaders\transform.frag" />
+    <None Include="src\shaders\transform.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

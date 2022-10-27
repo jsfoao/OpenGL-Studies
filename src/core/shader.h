@@ -4,7 +4,12 @@
 #include "core/core.h"
 #include "utils/fileutils.h"
 #include <vector>
-#include "math/math.h"
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
+using namespace glm;
 
 namespace Nata
 {
@@ -31,21 +36,23 @@ namespace Nata
 		void Disable() const;
 		inline unsigned int GetID() { return m_ShaderID; }
 
-		void SetUniform1f(const char* name, float value);
+
 		void SetUniform1i(const char* name, int value);
+		void SetUniform1f(const char* name, float value);
 		void SetUniform2f(const char* name, float v0, float v1);
 		void SetUniform3f(const char* name, float v0, float v1, float v2);
 		void SetUniform4f(const char* name, float v0, float v1, float v2, float v3);
-
-		void SetUniform2f(const char* name, Vector2& vector);
-		void SetUniform2f(const char* name, Vector2 vector);
-		void SetUniform3f(const char* name, Vector3& vector);
-		void SetUniform4f(const char* name, Vector4& vector);
-		void SetUniformMat4(const char* name, Matrix4& matrix);
+		void SetUniform2f(const char* name, const vec2& v);
+		void SetUniform3f(const char* name, const vec3& v);
+		void SetUniform4f(const char* name, const vec4& v);
+		void SetUniformMat4(const char* name, const mat4& matrix);
 		
 		/// <summary>
 		/// Creates program and attaches shaders to it. Returns program id
 		/// </summary>
 		unsigned int Load();
+
+	protected:
+		unsigned int GetUniformLocation(const char* name);
 	};
 }

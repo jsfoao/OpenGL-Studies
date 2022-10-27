@@ -126,5 +126,9 @@
     <None Include="src\shaders\test.vert" />
     <None Include="src\shaders\test.frag" />
     <None Include="src\shaders\test2.frag" />
+    <None Include="src\shaders\transform.vert" />
+    <None Include="src\shaders\transform.frag" />
+    <None Include="src\shaders\coordinates.vert" />
+    <None Include="src\shaders\coordinates.frag" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,11 @@
 #pragma once
-#include "exercises/exercises.hpp"
 #include "nata.h"
-#include "math/math.h"
+#include "exercises/exercises.hpp"
 
 using namespace Nata;
+using namespace glm;
 
 int main(int argc, char** argv)
 {
-	Exercises::Textures_1();
+	Exercises::Camera_1();
 }
