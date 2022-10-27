@@ -4,7 +4,7 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "key.h"
-#include "math/vector.h"
+#include "core/glm_math.h"
 
 namespace Nata
 {
@@ -19,10 +19,10 @@ namespace Nata
 	class Input
 	{
 	public:
-		ActionState keys[GLFW_KEY_LAST];
-		ActionState mouseBtns[MAX_MOUSE_BUTTONS];
-		double mx;
-		double my;
+		ActionState m_Keys[GLFW_KEY_LAST];
+		ActionState m_MouseBtns[MAX_MOUSE_BUTTONS];
+		double m_Mx;
+		double m_My;
 
 	public:
 		Input();
@@ -31,18 +31,14 @@ namespace Nata
 		void Clear();
 
 		bool GetKeyDown(int key) const;
-		//bool GetKeyRelease(int key) const;
-		//bool GetKeyHold(int key) const;
 
 		bool GetMouseDown(int button) const;
-		//bool GetMouseRelease(int button) const;
-		//bool GetMouseHold(int button) const;
 
 		void SetKeyState(int key, bool state);
 		void SetMouseState(int mouseBtn, bool state);
 		void SetCursorPos(double x, double y);
 
-		Vector2 GetMousePos() { return Vector2(mx, my); }
+		vec2 GetMousePos();
 	};
 
 	extern Input* input;

@@ -1,5 +1,5 @@
 #include "nata.h"
-#include <vector>
+
 namespace Nata
 {
 	namespace Exercises
@@ -1243,39 +1243,267 @@ namespace Nata
                 rotationAxis.push_back(rv);
             }
 
-            view = translate(view, vec3(0.f, 0.f, -3.f));
-
-            float sens = 0.01f;
             while (!win->Closed())
             {
                 win->Clear();
                 float time = (float)glfwGetTime();
 
-                if (input->GetKeyDown(GLFW_KEY_UP))
+                // 1. camera position
+                glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+
+                // 2. camera direction
+                glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, -3.0f);
+                glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+
+                // 3. right axis
+                glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+                glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+
+                // 4. up axis
+                glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+                
+                float radius = 10.f;
+                float camX = sin(time) * radius;
+                float camZ = cos(time) * radius;
+
+                cameraPos.x = camX;
+                cameraPos.z = camZ;
+
+                view = lookAt(cameraPos, cameraTarget, cameraUp);
+
+                ourShader.Enable();
+                glBindVertexArray(VAO);
+
+                // bind texture on corresponding texture unit
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, texture0);
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, texture1);
+
+                ourShader.SetUniformMat4("view", view);
+                ourShader.SetUniformMat4("projection", projection);
+                for (size_t i = 0; i < 10; i++)
                 {
-                    if (input->GetKeyDown(GLFW_KEY_LEFT_SHIFT))
-                        view = translate(view, vec3(0.f, 0.f, 1.f) * sens);
-                    else
-                        view = translate(view, vec3(0.f, -1.f, 0.f) * sens);
+                    mat4 model = mat4(1.0f);
+
+                    vec3 position = vec3(cubePos[i].x, cubePos[i].y/*+ (sin(time) / 2)*/, cubePos[i].z);
+                    model = translate(model, position);
+                    model = rotate(model, time, rotationAxis[i]);
+                    ourShader.SetUniformMat4("model", model);
+
+                    glDrawArrays(GL_TRIANGLES, 0, 36);
                 }
 
-                if (input->GetKeyDown(GLFW_KEY_DOWN))
-                {
-                    if (input->GetKeyDown(GLFW_KEY_LEFT_SHIFT))
-                        view = translate(view, vec3(0.f, 0.f, -1.f) * sens);
-                    else
-                        view = translate(view, vec3(0.f, 1.f, 0.f) * sens);
-                }
 
-                if (input->GetKeyDown(GLFW_KEY_LEFT))
-                {
-                    view = translate(view, vec3(1.f, 0.f, 0.f) * sens);
-                }
+                ourShader.Disable();
 
-                if (input->GetKeyDown(GLFW_KEY_RIGHT))
+                win->Update();
+            }
+            return 0;
+        }
+
+        int Camera_2()
+        {
+            Window* win = new Window("OpenGL Studies", 700, 500);
+            Input* input = win->GetInput();
+
+            Shader ourShader("src\\shaders\\coordinates.vert", "src\\shaders\\coordinates.frag");
+
+            glm::vec3 cubePos[] =
+            {
+                vec3(0.0f,  0.0f,  0.0f),
+                vec3(2.0f,  5.0f, -15.0f),
+                vec3(-1.5f, -2.2f, -2.5f),
+                vec3(-3.8f, -2.0f, -12.3f),
+                vec3(2.4f, -0.4f, -3.5f),
+                vec3(-1.7f,  3.0f, -7.5f),
+                vec3(1.3f, -2.0f, -2.5f),
+                vec3(1.5f,  2.0f, -2.5f),
+                vec3(1.5f,  0.2f, -1.5f),
+                vec3(-1.3f,  1.0f, -1.5f)
+            };
+
+            float vertices[] =
+            {
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+                 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+                 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+                 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+                 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+            };
+
+            unsigned int VBO, VAO;
+            glGenVertexArrays(1, &VAO);
+            glGenBuffers(1, &VBO);
+
+            glBindVertexArray(VAO);
+
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+            // position attribute
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+            // texture coord attribute
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(1);
+
+
+            // Initializing Texture 0
+            unsigned int texture0;
+            glGenTextures(1, &texture0);
+            glBindTexture(GL_TEXTURE_2D, texture0);
+            // set the texture wrapping parameters
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            // set texture filtering parameters
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            // load image, create texture and generate mipmaps
+            int width, height, nrChannels;
+            unsigned char* data = stbi_load("res\\container.jpg", &width, &height, &nrChannels, 0);
+            if (data)
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            else
+            {
+                std::cout << "Failed to load texture" << std::endl;
+            }
+            stbi_image_free(data);
+
+            // Initializing Texture 1
+            unsigned int texture1;
+            glGenTextures(1, &texture1);
+            glBindTexture(GL_TEXTURE_2D, texture1);
+            // set the texture wrapping parameters
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            // set texture filtering parameters
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            // load image, create texture and generate mipmaps
+            stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+            data = stbi_load("res\\pepega.png", &width, &height, &nrChannels, 0);
+            if (data)
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            else
+            {
+                std::cout << "Failed to load texture" << std::endl;
+            }
+            stbi_image_free(data);
+
+            // View and projection matrices
+            glm::mat4 view = glm::mat4(1.0f);
+            glm::mat4 projection;
+            projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+            ourShader.Enable();
+            ourShader.SetUniform1i("texture0", 0);
+            ourShader.SetUniform1i("texture1", 1);
+
+            glEnable(GL_DEPTH_TEST);
+
+
+            std::vector<vec3> rotationAxis;
+            for (size_t i = 0; i < 10; i++)
+            {
+                float rx = ((float)rand()) / (float)RAND_MAX;
+                float ry = ((float)rand()) / (float)RAND_MAX;
+                float rz = ((float)rand()) / (float)RAND_MAX;
+                vec3 rv = vec3(rx, ry, rz);
+                rotationAxis.push_back(rv);
+            }
+
+            
+            const float camSpeed = 2.f;
+            vec2 lastMousePos = vec2(0.f, 0.f);
+
+            // 1. initial camera position
+            vec3 camPos = glm::vec3(0.f, 0.f, 3.f);
+            float deltaTime = 0.f;
+            double lastFrame = 0.f;
+
+            while (!win->Closed())
+            {
+                double currentFrame = glfwGetTime();
+                deltaTime = currentFrame - lastFrame;
+                lastFrame = currentFrame;
+
+                vec2 mousePos = input->GetMousePos();
+                //vec2 mouseDelta = vec2(lastMousePos.x)
+
+                win->Clear();
+                float time = (float)glfwGetTime();
+
+                // 2. camera direction
+                vec3 camTarget = glm::vec3(0.f, 0.f, -3.f);
+                vec3 camForward = vec3(0.f, 0.f, -1.f);
+
+                // 3. right axis
+                vec3 camRight = glm::normalize(glm::cross(vec3(0.f, 1.f, 0.f), camForward));
+
+                // 4. up axis
+                vec3 camUp = glm::cross(camForward, camRight);
+
+                if (input->GetKeyDown(GLFW_KEY_W))
                 {
-                    view = translate(view, vec3(-1.f, 0.f, 0.f) * sens);
+                    camPos += camSpeed * camForward * deltaTime;
                 }
+                if (input->GetKeyDown(GLFW_KEY_S))
+                {
+                    camPos -= camSpeed * camForward * deltaTime;
+                }
+                if (input->GetKeyDown(GLFW_KEY_A))
+                {
+                    camPos += camSpeed * camRight * deltaTime;
+                }
+                if (input->GetKeyDown(GLFW_KEY_D))
+                {
+                    camPos -= camSpeed * camRight * deltaTime;
+                }
+                
+                view = lookAt(camPos, camPos + camForward, camUp);
 
                 ourShader.Enable();
                 glBindVertexArray(VAO);

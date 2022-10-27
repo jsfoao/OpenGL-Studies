@@ -96,8 +96,6 @@
     <ClCompile Include="src\core\window.cpp" />
     <ClCompile Include="src\core\shader.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\math\matrix.cpp" />
-    <ClCompile Include="src\math\vector.cpp" />
     <ClCompile Include="src\utils\fileutils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -114,10 +112,6 @@
     <ClInclude Include="src\core\window.h" />
     <ClInclude Include="src\exercises\exercises.hpp" />
     <ClInclude Include="src\core\shader.h" />
-    <ClInclude Include="src\math\math.h" />
-    <ClInclude Include="src\math\mathf.h" />
-    <ClInclude Include="src\math\matrix.h" />
-    <ClInclude Include="src\math\vector.h" />
     <ClInclude Include="src\nata.h" />
     <ClInclude Include="src\utils\fileutils.h" />
   </ItemGroup>

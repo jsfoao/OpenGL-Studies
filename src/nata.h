@@ -10,9 +10,7 @@
 #include "stb_image.h"
 
 // OpenGL math library
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "core/glm_math.h"
 
 // Nata
 #include "core/core.h"
