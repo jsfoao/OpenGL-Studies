@@ -41,6 +41,11 @@ namespace Nata
 		return m_MouseBtns[code].current;
 	}
 
+	vec2 Input::GetMousePos()
+	{
+		return vec2(m_Mx, m_My);
+	}
+
 	void Input::SetKeyState(int code, bool state)
 	{
 		m_Keys[code].previous = m_Keys[code].current;
@@ -56,9 +61,5 @@ namespace Nata
 	{
 		m_Mx = x;
 		m_My = y;
-	}
-	vec2 Input::GetMousePos()
-	{
-		return vec2(m_Mx, m_My);
 	}
 }

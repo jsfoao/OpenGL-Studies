@@ -1457,9 +1457,12 @@ namespace Nata
 
             
             const float camSpeed = 2.f;
+            const float camSens = 0.2f;
             vec2 lastMousePos = vec2(0.f, 0.f);
 
             // 1. initial camera position
+            float pitch = 0;
+            float yaw = -90.f;
             vec3 camPos = glm::vec3(0.f, 0.f, 3.f);
             float deltaTime = 0.f;
             double lastFrame = 0.f;
@@ -1471,14 +1474,22 @@ namespace Nata
                 lastFrame = currentFrame;
 
                 vec2 mousePos = input->GetMousePos();
-                //vec2 mouseDelta = vec2(lastMousePos.x)
+                vec2 mouseDelta = vec2(mousePos.x - lastMousePos.x, mousePos.y - lastMousePos.y);
+                lastMousePos = mousePos;
+
+                LOGVEC2(mouseDelta.x, mouseDelta.y);
 
                 win->Clear();
                 float time = (float)glfwGetTime();
 
                 // 2. camera direction
-                vec3 camTarget = glm::vec3(0.f, 0.f, -3.f);
-                vec3 camForward = vec3(0.f, 0.f, -1.f);
+                pitch += mouseDelta.y * camSens * deltaTime * -1.f;
+                yaw += mouseDelta.x * camSens * deltaTime;
+                vec3 camForward;
+                camForward.x = cos(yaw) * cos(pitch);
+                camForward.y = sin(pitch);
+                camForward.z = sin(yaw) * cos(pitch);
+                camForward = normalize(camForward);
 
                 // 3. right axis
                 vec3 camRight = glm::normalize(glm::cross(vec3(0.f, 1.f, 0.f), camForward));
@@ -1530,6 +1541,188 @@ namespace Nata
 
 
                 ourShader.Disable();
+
+                win->Update();
+            }
+            return 0;
+        }
+
+        int Lighting_1()
+        {
+            Window* win = new Window("OpenGL Studies", 700, 500);
+            Input* input = win->GetInput();
+
+            Shader shader("src\\shaders\\lighting.vert", "src\\shaders\\lighting.frag");
+            Shader lightShader("src\\shaders\\light_source.vert", "src\\shaders\\light_source.frag");
+
+            float vertices[] =
+            {
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+                 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+                -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+                -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+                 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+                 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+                 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+            };
+
+            // 1. object
+            unsigned int VBO, VAO;
+            glGenVertexArrays(1, &VAO);
+            glGenBuffers(1, &VBO);
+
+            glBindVertexArray(VAO);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+            // position attribute
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+            // normal attribute
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(1);
+
+            // 2. light source
+            unsigned int lightVAO;
+            glGenVertexArrays(1, &lightVAO);
+
+            glBindVertexArray(lightVAO); 
+            // only need to bind buffer; no need to send since vbo already has vertices data that we want
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            // position attribute
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+            // normal attribute
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(1);
+
+            glEnable(GL_DEPTH_TEST);
+            
+            // View and projection matrices
+            glm::mat4 view = glm::mat4(1.0f);
+            glm::mat4 projection;
+            projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+            const float camSpeed = 2.f;
+            const float camSens = 0.2f;
+            vec2 lastMousePos = vec2(0.f, 0.f);
+
+            // 1. initial camera position and rotation
+            float pitch = 0.f;
+            float yaw = -90.f;
+            vec3 camPos = glm::vec3(0.f, 0.f, -3.f);
+            float deltaTime = 0.f;
+            double lastFrame = 0.f;
+
+            while (!win->Closed())
+            {
+                double currentFrame = glfwGetTime();
+                deltaTime = currentFrame - lastFrame;
+                lastFrame = currentFrame;
+
+                win->Clear();
+                float time = (float)glfwGetTime();
+
+                // 2. camera forward
+                vec3 camForward = vec3(0.f, 0.f, 1.f);
+
+                // 3. right axis
+                vec3 camRight = glm::normalize(glm::cross(vec3(0.f, 1.f, 0.f), camForward));
+
+                // 4. up axis
+                vec3 camUp = glm::cross(camForward, camRight);
+
+                // handling camera input
+                if (input->GetKeyDown(GLFW_KEY_W))
+                {
+                    camPos += camSpeed * camForward * deltaTime;
+                }
+                if (input->GetKeyDown(GLFW_KEY_S))
+                {
+                    camPos -= camSpeed * camForward * deltaTime;
+                }
+                if (input->GetKeyDown(GLFW_KEY_A))
+                {
+                    camPos += camSpeed * camRight * deltaTime;
+                }
+                if (input->GetKeyDown(GLFW_KEY_D))
+                {
+                    camPos -= camSpeed * camRight * deltaTime;
+                }
+                
+                view = lookAt(camPos, camPos + camForward, camUp);
+                
+
+                vec3 lightPosition = vec3(1.2f, 1.f, 2.f);
+
+                // 2. render object
+                shader.Enable();
+                glBindVertexArray(VAO);
+                
+                shader.SetUniform3f("objectColor", vec3(1.f, .5f, .31f));
+                shader.SetUniform3f("lightColor", vec3(1.f, 1.f, 1.f));
+                shader.SetUniform3f("lightPos", lightPosition);
+
+                shader.SetUniformMat4("view", view);
+                shader.SetUniformMat4("projection", projection);
+
+                vec3 position = vec3(0.f, 0.f, 0.f);
+                mat4 model = mat4(1.0f);
+                model = translate(model, position);
+                //model = rotate(model, time, vec3(.5f, 1.f, 0.f));
+                shader.SetUniformMat4("model", model);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+
+                // 2. render light source
+                lightShader.Enable();
+                glBindVertexArray(lightVAO);
+
+                lightShader.SetUniformMat4("view", view);
+                lightShader.SetUniformMat4("projection", projection);
+
+                model = mat4(1.0f);
+                model = translate(model, lightPosition);
+                model = scale(model, vec3(0.2f));
+                lightShader.SetUniformMat4("model", model);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+
+                lightShader.Disable();
 
                 win->Update();
             }

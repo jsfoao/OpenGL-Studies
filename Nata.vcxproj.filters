@@ -80,6 +80,9 @@
     <ClInclude Include="include\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\glm_math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glew32.lib" />
@@ -112,5 +115,9 @@
     <None Include="src\shaders\transform.frag" />
     <None Include="src\shaders\coordinates.vert" />
     <None Include="src\shaders\coordinates.frag" />
+    <None Include="src\shaders\lighting.vert" />
+    <None Include="src\shaders\lighting.frag" />
+    <None Include="src\shaders\light_source.vert" />
+    <None Include="src\shaders\light_source.frag" />
   </ItemGroup>
 </Project>

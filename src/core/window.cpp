@@ -65,6 +65,7 @@ namespace Nata
 
 	void Window::Clear() const
 	{
+		glClearColor(.15f, .15f, .15f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 

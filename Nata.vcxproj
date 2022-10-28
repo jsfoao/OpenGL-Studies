@@ -71,7 +71,8 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)bin" "$(TargetDir)" /e /y /i /r</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -107,6 +108,7 @@
     <ClInclude Include="include\GL\wglew.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="src\core\core.h" />
+    <ClInclude Include="src\core\glm_math.h" />
     <ClInclude Include="src\core\input.h" />
     <ClInclude Include="src\core\key.h" />
     <ClInclude Include="src\core\window.h" />
@@ -141,6 +143,10 @@
     <None Include="src\shaders\basic.vert" />
     <None Include="src\shaders\coordinates.frag" />
     <None Include="src\shaders\coordinates.vert" />
+    <None Include="src\shaders\lighting.frag" />
+    <None Include="src\shaders\lighting.vert" />
+    <None Include="src\shaders\light_source.frag" />
+    <None Include="src\shaders\light_source.vert" />
     <None Include="src\shaders\test.frag" />
     <None Include="src\shaders\test.vert" />
     <None Include="src\shaders\test2.frag" />
