@@ -1754,7 +1754,7 @@ namespace Nata
             Input* input = win->GetInput();
 
             Shader shader("src\\shaders\\lighting.vert", "src\\shaders\\lighting.frag");
-            Shader lightShader("src\\shaders\\light_source.vert", "src\\shaders\\light_source.frag");
+            Shader lightShader("src\\shaders\\unlit.vert", "src\\shaders\\unlit.frag");
 
             float vertices[] = 
             {
@@ -2246,11 +2246,6 @@ namespace Nata
                 -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
             };
 
-            vec3 pointLightPositions[] =
-            {
-                vec3(0.f, 0.f, 0.f)
-            };
-
             // 1. object
             unsigned int VBO, VAO;
             glGenVertexArrays(1, &VAO);
@@ -2276,28 +2271,35 @@ namespace Nata
             shader.Enable();
             shader.SetUniform1i("material.diffuse", 0);
             shader.SetUniform1i("material.specular", 1);
+            shader.Disable();
+
             // bind diffuse texture
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, diffuseTexture);
             // bind specular texture
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, specularTexture);
-            shader.Disable();
 
             lightShader.Enable();
-            lightShader.SetUniform3f("Color", vec3(1.f, 1.f, 1.f));
+            lightShader.SetUniform3f("color", vec3(1.f, 1.f, 1.f));
             lightShader.Disable();
 
             glEnable(GL_DEPTH_TEST);
 
             // view and projection matrices
-            mat4 view = mat4(1.0f);
+            glm::mat4 view = glm::mat4(1.0f);
             glm::mat4 projection;
-            projection = perspective(radians(45.0f), 700.f / 500.f, 0.1f, 100.0f);
+            projection = glm::perspective(glm::radians(45.0f), 700.f / 500.f, 0.1f, 100.0f);
+
+            // camera movement
+            const float camSpeed = 2.f;
+            const float camSens = 1.f;
+            vec2 lastMousePos = vec2(0.f, 0.f);
 
             // 1. initial camera settings
-            vec3 camPos = vec3(0.f, 0.f, 6.f);
-            
+            float pitch = 0;
+            float yaw = -90.f;
+            vec3 camPos = glm::vec3(0.f, 0.f, 6.f);
             float deltaTime = 0.f;
             double lastFrame = 0.f;
 
@@ -2315,32 +2317,35 @@ namespace Nata
                 // 2. camera direction
                 vec3 camForward = vec3(0.f, 0.f, -1.f);
                 // 3. right axis
-                vec3 camRight = normalize(cross(vec3(0.f, 1.f, 0.f), camForward));
+                vec3 camRight = glm::normalize(glm::cross(vec3(0.f, 1.f, 0.f), camForward));
                 // 4. up axis
-                vec3 camUp = cross(camForward, camRight);
+                vec3 camUp = glm::cross(camForward, camRight);
                 view = lookAt(camPos, camPos + camForward, camUp);
 
-                glBindVertexArray(VAO);
 
+                vec3 pointLightPositions[] =
+                {
+                    vec3(1.f, sin(time), 0.f),
+                    vec3(-1.f, 1.f, 0.f)
+                };
+
+                glBindVertexArray(VAO);
+                
                 // 2. render object
                 shader.Enable();
 
+                // object color and material
                 shader.SetUniform1f("material.shininess", 32.f);
 
+                // transformations
                 shader.SetUniformMat4("view", view);
                 shader.SetUniformMat4("projection", projection);
                 shader.SetUniform3f("viewPos", camPos);
-                shader.Disable();
 
-                lightShader.Enable();
-                lightShader.SetUniformMat4("view", view);
-                lightShader.SetUniformMat4("projection", projection);
-                lightShader.Disable();
-
-                for (int i = 0; i < 1; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     shader.Enable();
-                    // light settings
+                    // point light settings
                     shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].ambient").c_str(), .2f, .2f, .2f),
                     shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].diffuse").c_str(), .5f, .5f, .5f),
                     shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].specular").c_str(), 1.f, 1.f, 1.f),
@@ -2348,27 +2353,37 @@ namespace Nata
                     // attenuation
                     shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].position").c_str(), pointLightPositions[i]),
                     shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].constant").c_str(), 1.f);
-                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].linear").c_str(), .09f);
-                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].quadratic").c_str(), .032f);
+                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].linear").c_str(), 0.027f);
+                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].quadratic").c_str(), 0.028f);
                     shader.Disable();
 
+                    // rendering light sources
                     lightShader.Enable();
+
+                    lightShader.SetUniformMat4("view", view);
+                    lightShader.SetUniformMat4("projection", projection);
+
                     mat4 model = mat4(1.0f);
                     model = translate(model, pointLightPositions[i]);
-                    shader.SetUniformMat4("model", model);
+                    model = scale(model, vec3(.2f, .2f, .2f));
+                    lightShader.SetUniformMat4("model", model);
                     glDrawArrays(GL_TRIANGLES, 0, 36);
                     lightShader.Disable();
                 }
 
-                //// rendering objects in position
-                //shader.Enable();
-                //mat4 model = mat4(1.0f);
-                //model = translate(model, vec3(0.f, 0.f, 0.f));
-                //model = rotate(model, time * rotationSpeed, vec3(1.f, 1.f, 0.f));
-                //shader.SetUniformMat4("model", model);
+                // rendering objects in position
+                shader.Enable();
 
-                //glDrawArrays(GL_TRIANGLES, 0, 36);
-                //shader.Disable();
+                vec3 position = vec3(0.f, -1.8f, 0.f);
+                mat4 model = mat4(1.0f);
+                model = translate(model, position);
+                //model = rotate(model, time * rotationSpeed, vec3(.5f, 1.f, 0.f));
+                model = scale(model, vec3(5.f, 1.f, 5.f));
+                shader.SetUniformMat4("model", model);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+
+                shader.Disable();
 
                 win->Update();
             }
