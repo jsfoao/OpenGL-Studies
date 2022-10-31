@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <string>
 
 // OpenGL
 #include "GL/glew.h"
@@ -16,3 +17,4 @@
 #include "core/core.h"
 #include "core/window.h"
 #include "core/shader.h"
+#include "core/texture.h"

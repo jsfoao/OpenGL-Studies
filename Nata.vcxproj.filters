@@ -36,6 +36,9 @@
     <ClCompile Include="include\glm\detail\glm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\nata.h">
@@ -2909,6 +2912,9 @@
     <ClInclude Include="include\glm\vector_relational.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glew32.lib" />
@@ -2943,8 +2949,8 @@
     <None Include="src\shaders\coordinates.frag" />
     <None Include="src\shaders\lighting.vert" />
     <None Include="src\shaders\lighting.frag" />
-    <None Include="src\shaders\light_source.vert" />
-    <None Include="src\shaders\light_source.frag" />
+    <None Include="src\shaders\unlit.vert" />
+    <None Include="src\shaders\unlit.frag" />
     <None Include="include\glm\detail\func_common.inl">
       <Filter>Header Files</Filter>
     </None>
@@ -3353,5 +3359,7 @@
     <None Include="include\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="src\shaders\point_light.vert" />
+    <None Include="src\shaders\point_light.frag" />
   </ItemGroup>
 </Project>
