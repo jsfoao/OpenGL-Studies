@@ -2349,10 +2349,11 @@ namespace Nata
                 shader.SetUniform3f("viewPos", camPos);
 
                 // directional light
-                //shader.SetUniform3f("dirLight.direction", vec3(0.f, -1.f, 0.f));
-                //shader.SetUniform3f("dirLight.ambient", vec3(0.f, 0.f, 0.f));
-                //shader.SetUniform3f("dirLight.diffuse", vec3(1.f, 1.f, 1.f));
-                //shader.SetUniform3f("dirLight.specular", vec3(1.f, 1.f, 1.f));
+                shader.SetUniform3f("dirLight.direction", vec3(0.f, -1.f, 0.f));
+                shader.SetUniform3f("dirLight.ambient", vec3(0.f, 0.f, 0.f));
+                shader.SetUniform3f("dirLight.diffuse", vec3(1.f, 1.f, 1.f));
+                shader.SetUniform3f("dirLight.specular", vec3(1.f, 1.f, 1.f));
+                shader.SetUniform3f("dirLight.color", vec3(1.f, 1.f, 1.f));
 
                 for (int i = 0; i < 2; i++)
                 {
