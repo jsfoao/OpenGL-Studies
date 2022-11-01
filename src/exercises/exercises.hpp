@@ -2325,8 +2325,14 @@ namespace Nata
 
                 vec3 pointLightPositions[] =
                 {
-                    vec3(1.f, sin(time), 0.f),
+                    vec3(1.f, 1.f, 0.f),
                     vec3(-1.f, 1.f, 0.f)
+                };
+
+                vec3 pointLightColors[] =
+                {
+                    vec3(1.f, 0.f, 0.f),
+                    vec3(0.f, 0.f, 1.f)
                 };
 
                 glBindVertexArray(VAO);
@@ -2342,16 +2348,24 @@ namespace Nata
                 shader.SetUniformMat4("projection", projection);
                 shader.SetUniform3f("viewPos", camPos);
 
+                // directional light
+                //shader.SetUniform3f("dirLight.direction", vec3(0.f, -1.f, 0.f));
+                //shader.SetUniform3f("dirLight.ambient", vec3(0.f, 0.f, 0.f));
+                //shader.SetUniform3f("dirLight.diffuse", vec3(1.f, 1.f, 1.f));
+                //shader.SetUniform3f("dirLight.specular", vec3(1.f, 1.f, 1.f));
+
                 for (int i = 0; i < 2; i++)
                 {
                     shader.Enable();
-                    // point light settings
-                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].ambient").c_str(), .2f, .2f, .2f),
-                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].diffuse").c_str(), .5f, .5f, .5f),
-                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].specular").c_str(), 1.f, 1.f, 1.f),
+                    // point light
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].ambient").c_str(), .2f, .2f, .2f);
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].diffuse").c_str(), .5f, .5f, .5f);
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].specular").c_str(), 1.f, 1.f, 1.f);
+
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].color").c_str(), pointLightColors[i]);
 
                     // attenuation
-                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].position").c_str(), pointLightPositions[i]),
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].position").c_str(), pointLightPositions[i]);
                     shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].constant").c_str(), 1.f);
                     shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].linear").c_str(), 0.027f);
                     shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].quadratic").c_str(), 0.028f);
@@ -2362,6 +2376,8 @@ namespace Nata
 
                     lightShader.SetUniformMat4("view", view);
                     lightShader.SetUniformMat4("projection", projection);
+
+                    lightShader.SetUniform3f("color", pointLightColors[i]);
 
                     mat4 model = mat4(1.0f);
                     model = translate(model, pointLightPositions[i]);
@@ -2374,11 +2390,26 @@ namespace Nata
                 // rendering objects in position
                 shader.Enable();
 
-                vec3 position = vec3(0.f, -1.8f, 0.f);
+                vec3 position = vec3(-1.f, -1.f, 0.f);
                 mat4 model = mat4(1.0f);
                 model = translate(model, position);
-                //model = rotate(model, time * rotationSpeed, vec3(.5f, 1.f, 0.f));
-                model = scale(model, vec3(5.f, 1.f, 5.f));
+                model = rotate(model, time * rotationSpeed, vec3(.5f, 1.f, 0.f));
+                shader.SetUniformMat4("model", model);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+
+                position = vec3(0.f, 1.f, 0.f);
+                model = mat4(1.0f);
+                model = translate(model, position);
+                model = rotate(model, time * rotationSpeed, vec3(1.f, .5f, 0.f));
+                shader.SetUniformMat4("model", model);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+
+                position = vec3(1.f, -1.f, 0.f);
+                model = mat4(1.0f);
+                model = translate(model, position);
+                model = rotate(model, time * rotationSpeed, vec3(.8f, -1.f, .3f));
                 shader.SetUniformMat4("model", model);
 
                 glDrawArrays(GL_TRIANGLES, 0, 36);
