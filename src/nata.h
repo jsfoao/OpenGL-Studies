@@ -18,3 +18,4 @@
 #include "core/window.h"
 #include "core/shader.h"
 #include "core/texture.h"
+#include "core/mesh.h"

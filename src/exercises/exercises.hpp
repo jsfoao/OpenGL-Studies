@@ -2535,6 +2535,8 @@ namespace Nata
 
             const float rotationSpeed = .5f;
 
+            Model ourModel = Model("res\\models\\backpack.obj");
+
             while (!win->Closed())
             {
                 double currentFrame = glfwGetTime();
@@ -2618,18 +2620,15 @@ namespace Nata
                     lightShader.Disable();
                 }
 
-                // rendering objects in position
                 shader.Enable();
-
                 vec3 position = vec3(0.f, 0.f, 0.f);
                 mat4 model = mat4(1.0f);
                 model = translate(model, position);
-                model = rotate(model, time * rotationSpeed, vec3(.5f, 1.f, 0.f));
+                //model = rotate(model, time * rotationSpeed, vec3(.5f, 1.f, 0.f));
                 shader.SetUniformMat4("model", model);
-
-                glDrawArrays(GL_TRIANGLES, 0, 36);
-
                 shader.Disable();
+
+                ourModel.Draw(shader);
 
                 win->Update();
             }

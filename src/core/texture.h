@@ -12,7 +12,8 @@ namespace Nata
 		unsigned int id;
 		// diffuse or specular
 		std::string type;
+		std::string path;
 		
-		static int Load(const char* path);
+		static int Load(std::string path);
 	};
 }
