@@ -2421,5 +2421,219 @@ namespace Nata
             }
             return 0;
         }
+
+        int Models_1()
+        {
+            Window* win = new Window("OpenGL Studies", 700, 500);
+            Input* input = win->GetInput();
+
+            Shader shader("src\\shaders\\lit.vert", "src\\shaders\\lit.frag");
+            Shader lightShader("src\\shaders\\unlit.vert", "src\\shaders\\unlit.frag");
+
+            float vertices[] =
+            {
+                // positions          // normals           // texture coords
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+                 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+
+                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+
+                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+                -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+                -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+                 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+                 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+
+                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
+            };
+
+            // 1. object
+            unsigned int VBO, VAO;
+            glGenVertexArrays(1, &VAO);
+            glGenBuffers(1, &VBO);
+
+            glBindVertexArray(VAO);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+            // position attribute
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+            // normal attribute
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(1);
+            // texture coords
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+            glEnableVertexAttribArray(2);
+
+            unsigned int diffuseTexture = Texture::Load("res\\container2.png");
+            unsigned int specularTexture = Texture::Load("res\\container2_specular.png");
+
+            shader.Enable();
+            shader.SetUniform1i("material.diffuse", 0);
+            shader.SetUniform1i("material.specular", 1);
+            shader.Disable();
+
+            // bind diffuse texture
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, diffuseTexture);
+            // bind specular texture
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, specularTexture);
+
+            lightShader.Enable();
+            lightShader.SetUniform3f("color", vec3(1.f, 1.f, 1.f));
+            lightShader.Disable();
+
+            glEnable(GL_DEPTH_TEST);
+
+            // view and projection matrices
+            glm::mat4 view = glm::mat4(1.0f);
+            glm::mat4 projection;
+            projection = glm::perspective(glm::radians(45.0f), 700.f / 500.f, 0.1f, 100.0f);
+
+            // camera movement
+            const float camSpeed = 2.f;
+            const float camSens = 1.f;
+            vec2 lastMousePos = vec2(0.f, 0.f);
+
+            // 1. initial camera settings
+            float pitch = 0;
+            float yaw = -90.f;
+            vec3 camPos = glm::vec3(0.f, 0.f, 6.f);
+            float deltaTime = 0.f;
+            double lastFrame = 0.f;
+
+            const float rotationSpeed = .5f;
+
+            while (!win->Closed())
+            {
+                double currentFrame = glfwGetTime();
+                deltaTime = currentFrame - lastFrame;
+                lastFrame = currentFrame;
+
+                win->Clear();
+                float time = (float)glfwGetTime();
+
+                // 2. camera direction
+                vec3 camForward = vec3(0.f, 0.f, -1.f);
+                // 3. right axis
+                vec3 camRight = glm::normalize(glm::cross(vec3(0.f, 1.f, 0.f), camForward));
+                // 4. up axis
+                vec3 camUp = glm::cross(camForward, camRight);
+                view = lookAt(camPos, camPos + camForward, camUp);
+
+
+                vec3 pointLightPositions[] =
+                {
+                    vec3(1.f, 1.f, 0.f),
+                    vec3(-1.f, 1.f, 0.f)
+                };
+
+                vec3 pointLightColors[] =
+                {
+                    vec3(1.f, 0.f, 0.f),
+                    vec3(0.f, 0.f, 1.f)
+                };
+
+                glBindVertexArray(VAO);
+
+                // 2. render object
+                shader.Enable();
+
+                // object color and material
+                shader.SetUniform1f("material.shininess", 32.f);
+
+                // transformations
+                shader.SetUniformMat4("view", view);
+                shader.SetUniformMat4("projection", projection);
+                shader.SetUniform3f("viewPos", camPos);
+
+                // directional light
+                shader.SetUniform3f("dirLight.direction", vec3(0.f, -1.f, 0.f));
+                shader.SetUniform3f("dirLight.ambient", vec3(0.f, 0.f, 0.f));
+                shader.SetUniform3f("dirLight.diffuse", vec3(1.f, 1.f, 1.f));
+                shader.SetUniform3f("dirLight.specular", vec3(1.f, 1.f, 1.f));
+                shader.SetUniform3f("dirLight.color", vec3(1.f, 1.f, 1.f));
+
+                for (int i = 0; i < 2; i++)
+                {
+                    shader.Enable();
+                    // point light
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].ambient").c_str(), .2f, .2f, .2f);
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].diffuse").c_str(), .5f, .5f, .5f);
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].specular").c_str(), 1.f, 1.f, 1.f);
+
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].color").c_str(), pointLightColors[i]);
+
+                    // attenuation
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].position").c_str(), pointLightPositions[i]);
+                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].constant").c_str(), 1.f);
+                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].linear").c_str(), 0.027f);
+                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].quadratic").c_str(), 0.028f);
+                    shader.Disable();
+
+                    // rendering light sources
+                    lightShader.Enable();
+
+                    lightShader.SetUniformMat4("view", view);
+                    lightShader.SetUniformMat4("projection", projection);
+
+                    lightShader.SetUniform3f("color", pointLightColors[i]);
+
+                    mat4 model = mat4(1.0f);
+                    model = translate(model, pointLightPositions[i]);
+                    model = scale(model, vec3(.2f, .2f, .2f));
+                    lightShader.SetUniformMat4("model", model);
+                    glDrawArrays(GL_TRIANGLES, 0, 36);
+                    lightShader.Disable();
+                }
+
+                // rendering objects in position
+                shader.Enable();
+
+                vec3 position = vec3(0.f, 0.f, 0.f);
+                mat4 model = mat4(1.0f);
+                model = translate(model, position);
+                model = rotate(model, time * rotationSpeed, vec3(.5f, 1.f, 0.f));
+                shader.SetUniformMat4("model", model);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+
+                shader.Disable();
+
+                win->Update();
+            }
+            return 0;
+        }
 	}
 }

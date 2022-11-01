@@ -39,6 +39,9 @@
     <ClCompile Include="src\core\texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\nata.h">
@@ -2915,6 +2918,9 @@
     <ClInclude Include="src\core\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glew32.lib" />
@@ -3359,7 +3365,7 @@
     <None Include="include\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="src\shaders\point_light.vert" />
-    <None Include="src\shaders\point_light.frag" />
+    <None Include="src\shaders\lit.vert" />
+    <None Include="src\shaders\lit.frag" />
   </ItemGroup>
 </Project>

@@ -64,7 +64,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;Gdi32.lib;User32.lib;Shell32.lib;glew32s.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;Gdi32.lib;User32.lib;Shell32.lib;glew32s.lib;assimp-vc143-mtd.lib</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -94,6 +94,7 @@
   <ItemGroup>
     <ClCompile Include="include\glm\detail\glm.cpp" />
     <ClCompile Include="src\core\input.cpp" />
+    <ClCompile Include="src\core\mesh.cpp" />
     <ClCompile Include="src\core\stb_image.cpp" />
     <ClCompile Include="src\core\texture.cpp" />
     <ClCompile Include="src\core\window.cpp" />
@@ -1054,6 +1055,7 @@
     <ClInclude Include="src\core\glm_math.h" />
     <ClInclude Include="src\core\input.h" />
     <ClInclude Include="src\core\key.h" />
+    <ClInclude Include="src\core\mesh.h" />
     <ClInclude Include="src\core\texture.h" />
     <ClInclude Include="src\core\window.h" />
     <ClInclude Include="src\exercises\exercises.hpp" />
@@ -1219,8 +1221,8 @@
     <None Include="include\glm\gtx\vector_angle.inl" />
     <None Include="include\glm\gtx\vector_query.inl" />
     <None Include="include\glm\gtx\wrap.inl" />
-    <None Include="src\shaders\point_light.frag" />
-    <None Include="src\shaders\point_light.vert" />
+    <None Include="src\shaders\lit.frag" />
+    <None Include="src\shaders\lit.vert" />
     <None Include="src\shaders\basic.frag" />
     <None Include="src\shaders\basic.vert" />
     <None Include="src\shaders\coordinates.frag" />
