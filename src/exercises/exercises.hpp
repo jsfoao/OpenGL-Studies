@@ -2197,7 +2197,7 @@ namespace Nata
             Window* win = new Window("OpenGL Studies", 700, 500);
             Input* input = win->GetInput();
 
-            Shader shader("src\\shaders\\point_light.vert", "src\\shaders\\point_light.frag");
+            Shader shader("src\\shaders\\lit.vert", "src\\shaders\\lit.frag");
             Shader lightShader("src\\shaders\\unlit.vert", "src\\shaders\\unlit.frag");
 
             float vertices[] =
@@ -2428,7 +2428,7 @@ namespace Nata
             Input* input = win->GetInput();
 
             IMGUI_CHECKVERSION();
-            ImGui::CreateContext();
+            ImGui::Init();
             ImGuiIO& io = ImGui::GetIO(); (void)io;
             ImGui::StyleColorsDark();
             ImGui_ImplGlfw_InitForOpenGL(win->GetWindow(), true);
@@ -2438,52 +2438,6 @@ namespace Nata
 
             Shader shader("src\\shaders\\lit.vert", "src\\shaders\\lit.frag");
             Shader lightShader("src\\shaders\\unlit.vert", "src\\shaders\\unlit.frag");
-
-            vector<float> vertices =
-            {
-                // positions          // normals           // texture coords
-                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-
-                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-
-                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-                -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-
-                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-
-                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-
-                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
-            };
 
             Model ourModel = Model("res\\models\\teapot.obj");
 
@@ -2538,7 +2492,7 @@ namespace Nata
                 // initializing new frame
                 ImGui_ImplOpenGL3_NewFrame();
                 ImGui_ImplGlfw_NewFrame();
-                ImGui::NewFrame();
+                ImGui::Update();
 
                 // creating imgui window
                 ImGui::Begin("Window");
@@ -2612,10 +2566,154 @@ namespace Nata
                 vec3 position = vec3(0.f, 0.f, 0.f);
                 mat4 model = mat4(1.0f);
                 model = translate(model, position);
-                model = rotate(model, time * rotationSpeed, vec3(.5f, 1.f, 0.f));
+                model = rotate(model, time * rotationSpeed, vec3(0.f, 1.f, 0.f));
                 shader.SetUniformMat4("model", model);
                 ourModel.Draw();
                 shader.Disable();
+
+                win->Update();
+            }
+
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext();
+
+            return 0;
+        }
+
+        int Models_2()
+        {
+            Window* win = new Window("OpenGL Studies", 700, 500);
+            Input* input = win->GetInput();
+            Handles* handles = new Handles();
+
+            IMGUI_CHECKVERSION();
+            ImGui::Init();
+            ImGuiIO& io = ImGui::GetIO(); (void)io;
+            ImGui::StyleColorsDark();
+            ImGui_ImplGlfw_InitForOpenGL(win->GetWindow(), true);
+            ImGui_ImplOpenGL3_Init("#version 330");
+
+
+            Shader shader("src\\shaders\\lit.vert", "src\\shaders\\lit.frag");
+            Model model = Model("res\\models\\teapot.obj");
+
+            unsigned int diffuseTexture = Texture::Load("res\\container2.png");
+            unsigned int specularTexture = Texture::Load("res\\container2_specular.png");
+
+            shader.Enable();
+            shader.SetUniform1i("material.diffuse", 0);
+            shader.SetUniform1i("material.specular", 1);
+            shader.Disable();
+
+            // bind diffuse texture
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, diffuseTexture);
+            // bind specular texture
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, specularTexture);
+
+            glEnable(GL_DEPTH_TEST);
+
+            // view and projection matrices
+            mat4 view = mat4(1.0f);
+            mat4 projection;
+            projection = perspective(radians(45.0f), 700.f / 500.f, 0.1f, 100.0f);
+
+            // 1. initial camera settings
+            float pitch = -60.f;
+            float yaw = -90.f;
+            vec3 camPos = vec3(0.f, 6.f, 6.f);
+            float deltaTime = 0.f;
+            double lastFrame = 0.f;
+
+            const float rotationSpeed = .5f;
+
+            while (!win->Closed())
+            {
+                double currentFrame = glfwGetTime();
+                deltaTime = currentFrame - lastFrame;
+                lastFrame = currentFrame;
+
+                win->Clear();
+
+                // initializing new frame
+                ImGui_ImplOpenGL3_NewFrame();
+                ImGui_ImplGlfw_NewFrame();
+                ImGui::Update();
+
+                // creating imgui window
+                ImGui::Begin("Window");
+                ImGui::Text("Position: (0.0, 0.0, 0.0)");
+                ImGui::End();
+
+                // render imgui window
+                ImGui::Render();
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+                float time = (float)glfwGetTime();
+
+                // 2. camera direction
+                vec3 camForward = vec3(0.f, -1.f, -1.f);
+                // 3. right axis
+                vec3 camRight = glm::normalize(glm::cross(vec3(0.f, 1.f, 0.f), camForward));
+                // 4. up axis
+                vec3 camUp = glm::cross(camForward, camRight);
+                view = lookAt(camPos, camPos + camForward, camUp);
+
+
+                vec3 pointLightPositions[] =
+                {
+                    vec3(1.f, 1.f, 0.f),
+                    vec3(-1.f, 1.f, 0.f)
+                };
+
+                vec3 pointLightColors[] =
+                {
+                    vec3(1.f, 0.f, 0.f),
+                    vec3(0.f, 0.f, 1.f)
+                };
+
+                // 2. render object
+                shader.Enable();
+                // object color and material
+                shader.SetUniform1f("material.shininess", 32.f);
+
+                // transformations
+                shader.SetUniformMat4("view", view);
+                shader.SetUniformMat4("projection", projection);
+                shader.SetUniform3f("viewPos", camPos);
+
+                // directional light
+                shader.SetUniform3f("dirLight.direction", vec3(0.f, -1.f, 0.f));
+                shader.SetUniform3f("dirLight.ambient", vec3(0.f, 0.f, 0.f));
+                shader.SetUniform3f("dirLight.diffuse", vec3(1.f, 1.f, 1.f));
+                shader.SetUniform3f("dirLight.specular", vec3(1.f, 1.f, 1.f));
+                shader.SetUniform3f("dirLight.color", vec3(1.f, 1.f, 1.f));
+                shader.Disable();
+
+                for (int i = 0; i < 2; i++)
+                {
+                    shader.Enable();
+                    // point light
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].ambient").c_str(), .2f, .2f, .2f);
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].diffuse").c_str(), .5f, .5f, .5f);
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].specular").c_str(), 1.f, 1.f, 1.f);
+
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].color").c_str(), pointLightColors[i]);
+
+                    // attenuation
+                    shader.SetUniform3f(("pointLights[" + std::to_string(i) + "].position").c_str(), pointLightPositions[i]);
+                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].constant").c_str(), 1.f);
+                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].linear").c_str(), 0.027f);
+                    shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].quadratic").c_str(), 0.028f);
+                    shader.Disable();
+                }
+
+                handles->Update(view, projection);
+                handles->DrawLine(vec3(0.f), vec3(1.f, 0.f, 0.f), vec3(1.f, 0.f, 0.f));
+                handles->DrawLine(vec3(0.f), vec3(0.f, 1.f, 0.f), vec3(0.f, 1.f, 0.f));
+                handles->DrawLine(vec3(0.f), vec3(0.f, 0.f, 1.f), vec3(1.f, 0.f, 1.f));
 
                 win->Update();
             }

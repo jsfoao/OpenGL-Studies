@@ -25,7 +25,7 @@ namespace Nata
 			std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
 		}
 
-		this->ProcessNode(scene->mRootNode, scene);
+		ProcessNode(scene->mRootNode, scene);
 	}
 
 	void Model::ProcessNode(aiNode* node, const aiScene* scene)
@@ -33,7 +33,8 @@ namespace Nata
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			this->meshes.push_back(this->ProcessMesh(mesh, scene));
+			Mesh processedMesh = ProcessMesh(mesh, scene);
+			meshes.push_back(processedMesh);
 		}
 
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -44,35 +45,33 @@ namespace Nata
 
 	Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	{
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::vector<Texture> textures;
+		vector<Vertex> vertices;
+		vector<unsigned int> indices;
+		vector<Texture> textures;
 
 		// process vertices
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
-			vec3 vert;
-			vert.x = mesh->mVertices[i].x;
-			vert.y = mesh->mVertices[i].y;
-			vert.z = mesh->mVertices[i].z;
-			vertex.Position = vert;
+			vertex.Position.x = mesh->mVertices[i].x;
+			vertex.Position.y = mesh->mVertices[i].y;
+			vertex.Position.z = mesh->mVertices[i].z;
 
-			vert.x = mesh->mNormals[i].x;
-			vert.y = mesh->mNormals[i].y;
-			vert.z = mesh->mNormals[i].z;
-			vertex.Normal = vert;
+			vertex.Normal.x = mesh->mNormals[i].x;
+			vertex.Normal.y = mesh->mNormals[i].y;
+			vertex.Normal.z = mesh->mNormals[i].z;
 
 			if (mesh->mTextureCoords[0])
 			{
-				vert.x = mesh->mTextureCoords[0][i].x;
-				vert.y = mesh->mTextureCoords[0][i].y;
-				vertex.TexCoords = vert;
+				vertex.TexCoords.x = mesh->mTextureCoords[0][i].x;
+				vertex.TexCoords.y = mesh->mTextureCoords[0][i].y;
 			}
 			else
 			{
 				vertex.TexCoords = vec2(0.f, 0.f);
 			}
+
+			vertices.push_back(vertex);
 		}
 
 		// process indices

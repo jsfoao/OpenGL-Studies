@@ -2,26 +2,29 @@
 
 namespace Nata
 {
-	Mesh::Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices)
+	Mesh::Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices, unsigned int drawType)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
+		this->drawType = drawType;
 		useIndices = true;
 
 		SetupMesh();
 	}
 
-	Mesh::Mesh(vector<Vertex>& vertices)
+	Mesh::Mesh(vector<Vertex>& vertices, unsigned int drawType)
 	{
 		this->vertices = vertices;
+		this->drawType = drawType;
 		useIndices = false;
-
+		
 		SetupMesh();
 	}
 
-	Mesh::Mesh(vector<float>& data)
+	Mesh::Mesh(vector<float>& data, unsigned int drawType)
 	{
 		this->vertices = ToVertexVector(data);
+		this->drawType = drawType;
 		useIndices = false;
 
 		SetupMesh();
@@ -31,30 +34,23 @@ namespace Nata
 	{
 		// draw mesh
 		glBindVertexArray(VAO);
-		if (useIndices)
+		if (drawType == N_DRAW_ELEMENTS)
 		{
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		}
-		else
+		else if (drawType == N_DRAW_ARRAYS)
 		{
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		}
+		else if (drawType == N_DRAW_LINES)
+		{
+			glDrawArrays(GL_LINES, 0, vertices.size());
 		}
 		glBindVertexArray(0);
 	}
 
 	void Mesh::SetupMesh()
 	{
-		/*
-		Note on structs
-		Structs have a great property in C++ that their memory layout is sequential.
-
-		Vertex vertex;
-		vertex.Position = glm::vec3(0.2f, 0.4f, 0.6f);
-		vertex.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
-		vertex.TexCoords = glm::vec2(1.0f, 0.0f);
-		// = [0.2f, 0.4f, 0.6f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f];
-		*/
-
 		// initialize buffer objects
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
@@ -66,7 +62,7 @@ namespace Nata
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-		if (useIndices)
+		if (indices.size() > 0)
 		{
 			// send indices data
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -85,6 +81,7 @@ namespace Nata
 		glEnableVertexAttribArray(2);
 
 	}
+
 	vector<Vertex> Mesh::ToVertexVector(vector<float>& data)
 	{
 		vector<Vertex> output;
@@ -106,4 +103,32 @@ namespace Nata
 		}
 		return output;
 	}
+	Vertex::Vertex()
+	{
+		this->Position = vec3(0.f);
+		this->Normal = vec3(0.f);
+		this->TexCoords = vec2(0.f);
+	}
+
+	Vertex::Vertex(vec3 position)
+	{
+		this->Position = position;
+		this->Normal = vec3(0.f);
+		this->TexCoords = vec2(0.f);
+	}
+
+	Vertex::Vertex(vec3 position, vec3 normal, vec2 texCoords)
+	{
+		this->Position = position;
+		this->Normal = normal;
+		this->TexCoords = TexCoords;
+	}
+
+	Vertex::Vertex(float posX, float posY, float posZ, float normX, float normY, float normZ, float texCoordX, float texCoordY)
+	{
+		this->Position = vec3(posX, posY, posZ);
+		this->Normal = vec3(normX, normY, normZ);
+		this->TexCoords = vec2(texCoordX, texCoordY);
+	}
+
 }

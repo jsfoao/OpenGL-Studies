@@ -3714,7 +3714,7 @@ void ImGui::GetAllocatorFunctions(ImGuiMemAllocFunc* p_alloc_func, ImGuiMemFreeF
     *p_user_data = GImAllocatorUserData;
 }
 
-ImGuiContext* ImGui::CreateContext(ImFontAtlas* shared_font_atlas)
+ImGuiContext* ImGui::Init(ImFontAtlas* shared_font_atlas)
 {
     ImGuiContext* prev_ctx = GetCurrentContext();
     ImGuiContext* ctx = IM_NEW(ImGuiContext)(shared_font_atlas);
@@ -4277,7 +4277,7 @@ ImGuiModFlags ImGui::GetMergedModFlags()
     return key_mods;
 }
 
-void ImGui::NewFrame()
+void ImGui::Update()
 {
     IM_ASSERT(GImGui != NULL && "No current context. Did you call ImGui::CreateContext() and ImGui::SetCurrentContext() ?");
     ImGuiContext& g = *GImGui;

@@ -2,6 +2,8 @@
 
 namespace Nata
 {
+	Shader::Shader(){}
+
 	Shader::Shader(const char* vertPath, const char* fragPath)
 	{
 		m_VertPath = vertPath;

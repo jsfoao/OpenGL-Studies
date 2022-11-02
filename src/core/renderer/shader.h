@@ -22,6 +22,7 @@ namespace Nata
 
 	public:
 		// Creates and loads
+		Shader();
 		Shader(const char* vertPath, const char* fragPath);
 		~Shader();
 

@@ -26,3 +26,4 @@
 #include "core/renderer/texture.h"
 #include "core/renderer/mesh.h"
 #include "core/renderer/model.h"
+#include "core/editor/editor.h"

@@ -27,6 +27,8 @@ namespace Nata
 	private:
 		void Load(string path);
 		void ProcessNode(aiNode* node, const aiScene* scene);
+
+		// Converts assim mesh to mesh
 		Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
 	};
 }
