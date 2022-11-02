@@ -3,6 +3,11 @@
 #include <vector>
 #include <string>
 
+// imgui
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 // OpenGL
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -13,9 +18,11 @@
 // OpenGL math library
 #include "core/glm_math.h"
 
+
 // Nata
 #include "core/core.h"
 #include "core/window.h"
-#include "core/shader.h"
-#include "core/texture.h"
-#include "core/mesh.h"
+#include "core/renderer/shader.h"
+#include "core/renderer/texture.h"
+#include "core/renderer/mesh.h"
+#include "core/renderer/model.h"

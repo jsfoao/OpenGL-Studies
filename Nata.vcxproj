@@ -93,12 +93,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="include\glm\detail\glm.cpp" />
+    <ClCompile Include="include\imgui\imgui.cpp" />
+    <ClCompile Include="include\imgui\imgui_demo.cpp" />
+    <ClCompile Include="include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="include\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="include\imgui\imgui_tables.cpp" />
+    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\core\input.cpp" />
-    <ClCompile Include="src\core\mesh.cpp" />
+    <ClCompile Include="src\core\renderer\mesh.cpp" />
+    <ClCompile Include="src\core\renderer\model.cpp" />
     <ClCompile Include="src\core\stb_image.cpp" />
-    <ClCompile Include="src\core\texture.cpp" />
+    <ClCompile Include="src\core\renderer\texture.cpp" />
     <ClCompile Include="src\core\window.cpp" />
-    <ClCompile Include="src\core\shader.cpp" />
+    <ClCompile Include="src\core\renderer\shader.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\utils\fileutils.cpp" />
   </ItemGroup>
@@ -1050,16 +1058,26 @@
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
+    <ClInclude Include="include\imgui\imconfig.h" />
+    <ClInclude Include="include\imgui\imgui.h" />
+    <ClInclude Include="include\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="include\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="include\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="include\imgui\imgui_internal.h" />
+    <ClInclude Include="include\imgui\imstb_rectpack.h" />
+    <ClInclude Include="include\imgui\imstb_textedit.h" />
+    <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="src\core\core.h" />
     <ClInclude Include="src\core\glm_math.h" />
     <ClInclude Include="src\core\input.h" />
     <ClInclude Include="src\core\key.h" />
-    <ClInclude Include="src\core\mesh.h" />
-    <ClInclude Include="src\core\texture.h" />
+    <ClInclude Include="src\core\renderer\mesh.h" />
+    <ClInclude Include="src\core\renderer\model.h" />
+    <ClInclude Include="src\core\renderer\texture.h" />
     <ClInclude Include="src\core\window.h" />
     <ClInclude Include="src\exercises\exercises.hpp" />
-    <ClInclude Include="src\core\shader.h" />
+    <ClInclude Include="src\core\renderer\shader.h" />
     <ClInclude Include="src\nata.h" />
     <ClInclude Include="src\utils\fileutils.h" />
   </ItemGroup>

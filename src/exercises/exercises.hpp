@@ -2427,10 +2427,19 @@ namespace Nata
             Window* win = new Window("OpenGL Studies", 700, 500);
             Input* input = win->GetInput();
 
+            IMGUI_CHECKVERSION();
+            ImGui::CreateContext();
+            ImGuiIO& io = ImGui::GetIO(); (void)io;
+            ImGui::StyleColorsDark();
+            ImGui_ImplGlfw_InitForOpenGL(win->GetWindow(), true);
+            ImGui_ImplOpenGL3_Init("#version 330");
+
+
+
             Shader shader("src\\shaders\\lit.vert", "src\\shaders\\lit.frag");
             Shader lightShader("src\\shaders\\unlit.vert", "src\\shaders\\unlit.frag");
 
-            float vertices[] =
+            vector<float> vertices =
             {
                 // positions          // normals           // texture coords
                 -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
@@ -2476,24 +2485,7 @@ namespace Nata
                 -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
             };
 
-            // 1. object
-            unsigned int VBO, VAO;
-            glGenVertexArrays(1, &VAO);
-            glGenBuffers(1, &VBO);
-
-            glBindVertexArray(VAO);
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-            // position attribute
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(0);
-            // normal attribute
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-            glEnableVertexAttribArray(1);
-            // texture coords
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-            glEnableVertexAttribArray(2);
+            Model ourModel = Model("res\\models\\teapot.obj");
 
             unsigned int diffuseTexture = Texture::Load("res\\container2.png");
             unsigned int specularTexture = Texture::Load("res\\container2_specular.png");
@@ -2535,8 +2527,6 @@ namespace Nata
 
             const float rotationSpeed = .5f;
 
-            Model ourModel = Model("res\\models\\backpack.obj");
-
             while (!win->Closed())
             {
                 double currentFrame = glfwGetTime();
@@ -2544,6 +2534,21 @@ namespace Nata
                 lastFrame = currentFrame;
 
                 win->Clear();
+
+                // initializing new frame
+                ImGui_ImplOpenGL3_NewFrame();
+                ImGui_ImplGlfw_NewFrame();
+                ImGui::NewFrame();
+
+                // creating imgui window
+                ImGui::Begin("Window");
+                ImGui::Text("This a very cool window");
+                ImGui::End();
+
+                // render imgui window
+                ImGui::Render();
+                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
                 float time = (float)glfwGetTime();
 
                 // 2. camera direction
@@ -2566,8 +2571,6 @@ namespace Nata
                     vec3(1.f, 0.f, 0.f),
                     vec3(0.f, 0.f, 1.f)
                 };
-
-                glBindVertexArray(VAO);
 
                 // 2. render object
                 shader.Enable();
@@ -2603,35 +2606,24 @@ namespace Nata
                     shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].linear").c_str(), 0.027f);
                     shader.SetUniform1f(("pointLights[" + std::to_string(i) + "].quadratic").c_str(), 0.028f);
                     shader.Disable();
-
-                    // rendering light sources
-                    lightShader.Enable();
-
-                    lightShader.SetUniformMat4("view", view);
-                    lightShader.SetUniformMat4("projection", projection);
-
-                    lightShader.SetUniform3f("color", pointLightColors[i]);
-
-                    mat4 model = mat4(1.0f);
-                    model = translate(model, pointLightPositions[i]);
-                    model = scale(model, vec3(.2f, .2f, .2f));
-                    lightShader.SetUniformMat4("model", model);
-                    glDrawArrays(GL_TRIANGLES, 0, 36);
-                    lightShader.Disable();
                 }
 
                 shader.Enable();
                 vec3 position = vec3(0.f, 0.f, 0.f);
                 mat4 model = mat4(1.0f);
                 model = translate(model, position);
-                //model = rotate(model, time * rotationSpeed, vec3(.5f, 1.f, 0.f));
+                model = rotate(model, time * rotationSpeed, vec3(.5f, 1.f, 0.f));
                 shader.SetUniformMat4("model", model);
+                ourModel.Draw();
                 shader.Disable();
-
-                ourModel.Draw(shader);
 
                 win->Update();
             }
+
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext();
+
             return 0;
         }
 	}
