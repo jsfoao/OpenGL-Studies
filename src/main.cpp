@@ -7,5 +7,5 @@ using namespace glm;
 
 int main(int argc, char** argv)
 {
-	Exercises::Models_2();
+	Exercises::Renderer_1();
 }
