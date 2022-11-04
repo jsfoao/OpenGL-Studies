@@ -3445,5 +3445,6 @@
     </None>
     <None Include="src\shaders\lit.vert" />
     <None Include="src\shaders\lit.frag" />
+    <None Include="bin\assimp-vc143-mtd.dll" />
   </ItemGroup>
 </Project>

@@ -1102,6 +1102,7 @@
     <Library Include="lib\SDL2_ttf.lib" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bin\assimp-vc143-mtd.dll" />
     <None Include="bin\glfw3.dll" />
     <None Include="bin\libjpeg-9.dll" />
     <None Include="bin\libpng16-16.dll" />
