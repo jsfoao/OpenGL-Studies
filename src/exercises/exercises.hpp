@@ -2776,16 +2776,17 @@ namespace Nata
                 -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f
             };
             
-            Shader shader("src\\shaders\\unlit_textured.vert", "src\\shaders\\unlit_textured.frag");
-            Texture texture;
-            texture.ID = Texture::LoadFromFile("container2.png", "res");
-            texture.Type = TEXTURE_DIFFUSE;
-            texture.Path = "container2.png";
-            vector<Texture> textures;
-            textures.push_back(texture);
-
-            Mesh ourMesh = Mesh(vertices, textures);
+            Shader shader("src\\shaders\\unlit.vert", "src\\shaders\\unlit.frag");
             Model ourModel("res\\models\\teapot.obj");
+
+            //Texture texture;
+            //texture.ID = Texture::LoadFromFile("container2.png", "res");
+            //texture.Type = TEXTURE_DIFFUSE;
+            //texture.Path = "container2.png";
+            //vector<Texture> textures;
+            //textures.push_back(texture);
+
+            //Mesh ourMesh = Mesh(vertices, textures);
 
             glEnable(GL_DEPTH_TEST);
 
@@ -2818,6 +2819,7 @@ namespace Nata
 
                 // transformations
                 shader.Enable();
+                shader.SetUniform3f("color", vec3(1.f, 1.f, 1.f));
                 shader.SetUniformMat4("view", view);
                 shader.SetUniformMat4("projection", projection);
 
