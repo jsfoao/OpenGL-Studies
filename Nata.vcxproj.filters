@@ -3011,6 +3011,7 @@
     <Library Include="lib\SDL2_ttf.lib" />
     <Library Include="lib\SDL2main.lib" />
     <Library Include="lib\SDL2test.lib" />
+    <Library Include="lib\assimp-vc143-mtd.lib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\glfw3.dll" />

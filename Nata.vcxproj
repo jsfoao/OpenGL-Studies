@@ -71,8 +71,7 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy "$(SolutionDir)bin" "$(TargetDir)" /e /y /i /r</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -1090,6 +1089,7 @@
     <ClInclude Include="src\utils\fileutils.h" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="lib\assimp-vc143-mtd.lib" />
     <Library Include="lib\glew32.lib" />
     <Library Include="lib\glew32s.lib" />
     <Library Include="lib\glfw3.lib" />
