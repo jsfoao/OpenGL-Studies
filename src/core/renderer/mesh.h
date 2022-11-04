@@ -3,6 +3,7 @@
 #include <vector>
 #include "texture.h"
 #include "shader.h"
+#include "buffer.h"
 
 #define N_DRAW_ELEMENTS 0
 #define N_DRAW_ARRAYS 1
@@ -17,11 +18,8 @@ namespace Nata
 		vec3 Position;
 		vec3 Normal;
 		vec2 TexCoords;
-
-		Vertex();
-		Vertex(vec3 position);
-		Vertex(vec3 position, vec3 normal, vec2 texCoords);
-		Vertex(float posX, float posY, float posZ, float normX = 0.f, float normY = 0.f, float normZ = 0.f, float texCoordX = 0.f, float texCoordY = 0.f);
+		vec3 Tangent;
+		vec3 Bitangent;
 	};
 
 	class Mesh
@@ -30,21 +28,28 @@ namespace Nata
 		//mesh data
 		vector<Vertex> vertices;
 		vector<unsigned int> indices;
-
-		Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices, unsigned int drawType = N_DRAW_ELEMENTS);
-		Mesh(vector<Vertex>& vertices, unsigned int drawType = N_DRAW_ELEMENTS);
-		Mesh(vector<float>& data, unsigned int drawType = N_DRAW_ELEMENTS);
-
-		void Draw();
-
-	private:
-		unsigned int VAO, VBO, EBO;
-		void SetupMesh();
-		bool useIndices;
-		unsigned int drawType;
-
+		vector<Texture> textures;
 
 	public:
-		static vector<Vertex> ToVertexVector(vector<float>& data);
+		VAO* m_VAO;
+		VBO* m_VBO;
+		IBO* m_IBO;
+
+	public:
+
+		Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
+		Mesh(vector<Vertex> vertices, vector<Texture> textures);
+		Mesh(vector<float> vertices, vector<Texture> textures);
+
+		void BindResources(Shader shader);
+		void Draw(Shader shader);
+		void DrawArrays(Shader shader);
+		
+
+	private:
+		void SetupMesh();
+
+	public:
+		static vector<Vertex> ToVertexData(const vector<float> vertices);
 	};
 }

@@ -4,16 +4,22 @@
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 namespace Nata
 {
+#define TEXTURE_DIFFUSE "diffuse"
+#define TEXTURE_SPECULAR "specular"
+#define TEXTURE_NORMAL "normal"
+#define TEXTURE_METAL "metal"
+
 	class Texture
 	{
 	public:
-		unsigned int id;
-		// diffuse or specular
-		std::string type;
-		std::string path;
+		unsigned int ID;
+		string Type;
+		string Path;
 		
-		static int Load(std::string path);
+		static int LoadFromFile(const char* path, string directory);
 	};
 }

@@ -2,46 +2,44 @@
 
 namespace Nata
 {
-	VBO::VBO(const vector<float> data, unsigned int componentCount)
+	VBO::VBO(const void* data, unsigned int size)
 	{
-		this->componentCount = componentCount;
 		glGenBuffers(1, &ID);
 		Bind();
-		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 		Unbind();
 	}
 
-	void VBO::Bind() const
+	void VBO::Bind()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, ID);
 	}
 
-	void VBO::Unbind() const
+	void VBO::Unbind()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	EBO::EBO(const vector<int> data, const unsigned int size)
+	IBO::IBO(const unsigned int* data, const unsigned int count)
 	{
 		glGenBuffers(1, &ID);
 		Bind();
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
 		Unbind();
 	}
 
-	void EBO::Bind() const
+	void IBO::Bind()
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
 	}
-	void EBO::Unbind() const
+
+	void IBO::Unbind()
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	VAO::VAO()
 	{
-		m_Index = 0;
-		m_Offset = 0;
 		glGenVertexArrays(1, &ID);
 	}
 
@@ -50,26 +48,28 @@ namespace Nata
 		glDeleteVertexArrays(1, &ID);
 	}
 
-	void VAO::Bind() const
+	void VAO::Bind()
 	{
 		glBindVertexArray(ID);
 	}
 
-	void VAO::Unbind() const
+	void VAO::Unbind()
 	{
 		glBindVertexArray(0);
 	}
 
-	void VAO::AddVBOAttrib(const VBO& vbo, const unsigned int count)
+	void VAO::AddBuffer(VBO& vbo, const VAOAttribLayout& layout)
 	{
 		Bind();
 		vbo.Bind();
-		glVertexAttribPointer(m_Index, count, GL_FLOAT, GL_FALSE, vbo.componentCount * sizeof(float), (void*)(m_Offset * sizeof(float)));
-		glEnableVertexAttribArray(m_Index);
-		vbo.Unbind();
-		Unbind();
-		m_Index++;
-		m_Offset += count;
+		unsigned int offset = 0;
+		for (unsigned int i = 0; i < layout.Elements.size(); i++)
+		{
+			VAOAttribElement el = layout.Elements[i];
+			glVertexAttribPointer(i, el.count, el.type, el.normalised, layout.Stride, (void*)(size_t)offset);
+			glEnableVertexAttribArray(i);
+			offset += el.count * VAOAttribElement::GetSizeOfType(el.type);
+		}
 	}
 }
 

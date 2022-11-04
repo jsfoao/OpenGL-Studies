@@ -7,18 +7,6 @@ using namespace std;
 
 namespace Nata
 {
-	struct VAOAttrib
-	{
-		VAOAttrib(unsigned int index, unsigned int count)
-		{
-			this->index = index;
-			this->count = count;
-		}
-
-		unsigned int index;
-		unsigned int count;
-	};
-
 	class Buffer
 	{
 	public:
@@ -26,9 +14,8 @@ namespace Nata
 
 		~Buffer(){};
 		
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
-		unsigned int GetID() const { return ID; };
+		virtual void Bind() = 0;
+		virtual void Unbind() = 0;
 
 	protected:
 		unsigned int ID;
@@ -37,40 +24,88 @@ namespace Nata
 	class VBO : Buffer
 	{
 	public:
-		VBO(const vector<float> data, unsigned int componentCount);
+		VBO(const void* data, unsigned int size);
 
-		void Bind() const;
-		void Unbind() const;
+		void Bind();
+		void Unbind();
 		unsigned int GetID() const { return ID; };
-
-		unsigned int componentCount;
 	};
 
-	class EBO : Buffer
+	class IBO : Buffer
 	{
 	public:
-		EBO(const vector<int> data, const unsigned int size);
+		IBO(const unsigned int* data, const unsigned int count);
 
-		void Bind() const;
-		void Unbind() const;
+		void Bind();
+		void Unbind();
 	};
-	
+
+	struct VAOAttribElement
+	{
+		unsigned int type;
+		unsigned int count;
+		unsigned char normalised;
+
+		VAOAttribElement(unsigned int type, unsigned int count, unsigned char normalised) :
+			type(type), count(count), normalised(normalised) {}
+
+		static unsigned int GetSizeOfType(unsigned int type)
+		{
+			switch (type)
+			{
+				case GL_FLOAT : return 4;
+				case GL_UNSIGNED_INT : return 4;
+				case GL_UNSIGNED_BYTE: return 1;
+			}
+			return 0;
+		}
+	};
+
+	class VAOAttribLayout
+	{
+	public:
+		vector<VAOAttribElement> Elements;
+		unsigned int Stride;
+
+		VAOAttribLayout() : Stride(0) {}
+
+		template<typename T>
+		void Push(unsigned int count) {}
+
+		template<>
+		void Push<float>(unsigned int count) 
+		{
+			Elements.push_back(VAOAttribElement(GL_FLOAT, count, GL_FALSE));
+			Stride += VAOAttribElement::GetSizeOfType(GL_FLOAT) * count;
+		}
+
+		template<>
+		void Push<unsigned int>(unsigned int count)
+		{
+			Elements.push_back(VAOAttribElement(GL_UNSIGNED_INT, count, GL_FALSE));
+			Stride += VAOAttribElement::GetSizeOfType(GL_UNSIGNED_INT) * count;
+		}
+
+		template<>
+		void Push<unsigned char>(unsigned int count)
+		{
+			Elements.push_back(VAOAttribElement(GL_UNSIGNED_BYTE, count, GL_FALSE));
+			Stride += VAOAttribElement::GetSizeOfType(GL_UNSIGNED_BYTE) * count;
+		}
+	};
+
 	class VAO
 	{
 	public:
-		unsigned int ID;
-
 		VAO();
 		~VAO();
 
-		void Bind() const;
-		void Unbind() const;
+		void Bind();
+		void Unbind();
 
-		void AddVBOAttrib(const VBO& vbo, const unsigned int count);
+		void AddBuffer(VBO& vbo, const VAOAttribLayout& layout);
 
 	protected:
-		vector<VBO> m_VBOs;
-		unsigned int m_Index;
-		unsigned int m_Offset;
+		unsigned int ID;
 	};
 }

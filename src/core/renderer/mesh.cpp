@@ -2,133 +2,155 @@
 
 namespace Nata
 {
-	Mesh::Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices, unsigned int drawType)
+	Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
-		this->drawType = drawType;
-		useIndices = true;
+		this->textures = textures;
 
-		SetupMesh();
+		m_VAO = new VAO();
+		m_VBO = new VBO(&this->vertices[0], this->vertices.size() * sizeof(Vertex));
+		m_IBO = new IBO(&this->indices[0], this->indices.size());
+
+		this->SetupMesh();
 	}
 
-	Mesh::Mesh(vector<Vertex>& vertices, unsigned int drawType)
+	Mesh::Mesh(vector<Vertex> vertices, vector<Texture> textures)
 	{
 		this->vertices = vertices;
-		this->drawType = drawType;
-		useIndices = false;
+		this->textures = textures;
+
+		m_VAO = new VAO();
+		m_VBO = new VBO(&this->vertices[0], this->vertices.size() * sizeof(Vertex));
+
+		this->SetupMesh();
+	}
+
+	Mesh::Mesh(vector<float> vertices, vector<Texture> textures)
+	{
+		this->vertices = ToVertexData(vertices);
+		this->textures = textures;
+
+		m_VAO = new VAO();
+		m_VBO = new VBO(&this->vertices[0], this->vertices.size() * sizeof(Vertex));
+
+		this->SetupMesh();
+	}
+
+	void Mesh::BindResources(Shader shader)
+	{
+		if (this->textures.size() == 0)
+			return;
+
+		shader.Enable();
+
+		unsigned int diffuseNr = 0;
+		unsigned int specularNr = 0;
+		for (unsigned int i = 0; i < this->textures.size(); i++)
+		{
+			glActiveTexture(GL_TEXTURE0 + i);
+			string number;
+			string name = this->textures[i].Type;
+			if (name == TEXTURE_DIFFUSE)
+			{
+				number = to_string(diffuseNr);
+				diffuseNr++;
+			}
+			else if (name == TEXTURE_SPECULAR)
+			{
+				number = to_string(specularNr);
+				specularNr++;
+			}
+			else
+			{
+				continue;
+			}
+			shader.SetUniform1i((name + number).c_str(), i);
+			glBindTexture(GL_TEXTURE_2D, this->textures[i].ID);
+		}
+	}
+
+	void Mesh::Draw(Shader shader)
+	{
+		shader.Enable();
+		BindResources(shader);
+		m_VAO->Bind();
+		m_IBO->Bind();
+
+		glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+
+		m_VAO->Unbind();
+		m_IBO->Unbind();
+	}
+
+	void Mesh::DrawArrays(Shader shader)
+	{
+		shader.Enable();
+		BindResources(shader);
+		m_VAO->Bind();
+
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		m_VAO->Unbind();
 		
-		SetupMesh();
-	}
-
-	Mesh::Mesh(vector<float>& data, unsigned int drawType)
-	{
-		this->vertices = ToVertexVector(data);
-		this->drawType = drawType;
-		useIndices = false;
-
-		SetupMesh();
-	}
-
-	void Mesh::Draw()
-	{
-		// draw mesh
-		glBindVertexArray(VAO);
-		if (drawType == N_DRAW_ELEMENTS)
-		{
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-		}
-		else if (drawType == N_DRAW_ARRAYS)
-		{
-			glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-		}
-		else if (drawType == N_DRAW_LINES)
-		{
-			glDrawArrays(GL_LINES, 0, vertices.size());
-		}
-		glBindVertexArray(0);
+		shader.Disable();
 	}
 
 	void Mesh::SetupMesh()
 	{
-		// initialize buffer objects
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
-
-		glBindVertexArray(VAO);
-
-		// send vertices data
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
-
-		if (indices.size() > 0)
-		{
-			// send indices data
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-		}
-
-		// how to interpret data
-		// vertex positions
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-		glEnableVertexAttribArray(0);
-		// vertex normals
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-		glEnableVertexAttribArray(1);
-		// vertex texture coords
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-		glEnableVertexAttribArray(2);
-
+		m_VAO->Bind();
+		m_VBO->Bind();
+		VAOAttribLayout layout;
+		layout.Push<float>(3); // Vertex position
+		layout.Push<float>(3); // Vertex normals
+		layout.Push<float>(2); // Vertex texture coords
+		layout.Push<float>(3); // Vertex tangent
+		layout.Push<float>(3); // Vertex bitangent
+		m_VAO->AddBuffer(*m_VBO, layout);
+		m_VBO->Unbind();
+		m_VAO->Unbind();
 	}
 
-	vector<Vertex> Mesh::ToVertexVector(vector<float>& data)
+	vector<Vertex> Mesh::ToVertexData(const vector<float> vertices)
 	{
 		vector<Vertex> output;
-		Vertex vertex;
-		for (unsigned int i = 0; i < data.size(); i+=8)
+		for (unsigned int i = 0; i < vertices.size(); i+=14)
 		{
-			vertex.Position.x = data[i];
-			vertex.Position.y = data[i + 1];
-			vertex.Position.z = data[i + 2];
+			vec3 vector3;
+			vec2 vector2;
+			Vertex vertex;
 
-			vertex.Normal.x = data[i + 3];
-			vertex.Normal.y = data[i + 4];
-			vertex.Normal.z = data[i + 5];
+			// Position
+			vector3.x = vertices[i];
+			vector3.y = vertices[i+1];
+			vector3.z = vertices[i+2];
+			vertex.Position = vector3;
 
-			vertex.TexCoords.x = data[i + 6];
-			vertex.TexCoords.y = data[i + 7];
+			// Normal
+			vector3.x = vertices[i+3];
+			vector3.y = vertices[i+4];
+			vector3.z = vertices[i+5];
+			vertex.Normal = vector3;
+
+			// TexCoords
+			vector2.x = vertices[i+6];
+			vector2.y = vertices[i+7];
+			vertex.TexCoords = vector2;
+
+			// Tangent
+			vector3.x = vertices[i+8];
+			vector3.y = vertices[i+9];
+			vector3.z = vertices[i+10];
+			vertex.Tangent = vector3;
+
+			// Bitangent
+			vector3.x = vertices[i+11];
+			vector3.y = vertices[i+12];
+			vector3.z = vertices[i+13];
+			vertex.Bitangent = vector3;
 
 			output.push_back(vertex);
 		}
+
 		return output;
 	}
-	Vertex::Vertex()
-	{
-		this->Position = vec3(0.f);
-		this->Normal = vec3(0.f);
-		this->TexCoords = vec2(0.f);
-	}
-
-	Vertex::Vertex(vec3 position)
-	{
-		this->Position = position;
-		this->Normal = vec3(0.f);
-		this->TexCoords = vec2(0.f);
-	}
-
-	Vertex::Vertex(vec3 position, vec3 normal, vec2 texCoords)
-	{
-		this->Position = position;
-		this->Normal = normal;
-		this->TexCoords = TexCoords;
-	}
-
-	Vertex::Vertex(float posX, float posY, float posZ, float normX, float normY, float normZ, float texCoordX, float texCoordY)
-	{
-		this->Position = vec3(posX, posY, posZ);
-		this->Normal = vec3(normX, normY, normZ);
-		this->TexCoords = vec2(texCoordX, texCoordY);
-	}
-
 }

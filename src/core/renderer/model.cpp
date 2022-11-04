@@ -7,11 +7,11 @@ namespace Nata
 		Load(path);
 	}
 
-	void Model::Draw()
+	void Model::Draw(Shader shader)
 	{
-		for (unsigned int i = 0; i < meshes.size(); i++)
+		for (unsigned int i = 0; i < Meshes.size(); i++)
 		{
-			meshes[i].Draw();
+			Meshes[i].Draw(shader);
 		}
 	}
 
@@ -33,8 +33,7 @@ namespace Nata
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			Mesh processedMesh = ProcessMesh(mesh, scene);
-			meshes.push_back(processedMesh);
+			Meshes.push_back(this->ProcessMesh(mesh, scene));
 		}
 
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -53,22 +52,51 @@ namespace Nata
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
-			vertex.Position.x = mesh->mVertices[i].x;
-			vertex.Position.y = mesh->mVertices[i].y;
-			vertex.Position.z = mesh->mVertices[i].z;
+			vec3 vector3; // placeholder vec3
+			vec2 vector2; // placeholder vec2
 
-			vertex.Normal.x = mesh->mNormals[i].x;
-			vertex.Normal.y = mesh->mNormals[i].y;
-			vertex.Normal.z = mesh->mNormals[i].z;
+			// Position
+			vector3.x = mesh->mVertices[i].x;
+			vector3.y = mesh->mVertices[i].y;
+			vector3.z = mesh->mVertices[i].z;
+			vertex.Position = vector3;
 
+			// Normal
+			vector3.x = mesh->mNormals[i].x;
+			vector3.y = mesh->mNormals[i].y;
+			vector3.z = mesh->mNormals[i].z;
+			vertex.Normal = vector3;
+
+			// TexCoords
 			if (mesh->mTextureCoords[0])
 			{
-				vertex.TexCoords.x = mesh->mTextureCoords[0][i].x;
-				vertex.TexCoords.y = mesh->mTextureCoords[0][i].y;
+				vector2.x = mesh->mTextureCoords[0][i].x;
+				vector2.y = mesh->mTextureCoords[0][i].y;
+				vertex.TexCoords = vector2;
 			}
 			else
 			{
-				vertex.TexCoords = vec2(0.f, 0.f);
+				vertex.TexCoords = vec2(0.f);
+			}
+
+			if (mesh->HasTangentsAndBitangents())
+			{
+				// Tangent
+				vector3.x = mesh->mTangents[i].x;
+				vector3.y = mesh->mTangents[i].y;
+				vector3.z = mesh->mTangents[i].z;
+				vertex.Tangent = vector3;
+
+				// Bitangent
+				vector3.x = mesh->mBitangents[i].x;
+				vector3.y = mesh->mBitangents[i].y;
+				vector3.z = mesh->mBitangents[i].z;
+				vertex.Bitangent = vector3;
+			}
+			else
+			{
+				vertex.Tangent = vec3(0.f);
+				vertex.Bitangent = vec3(0.f);
 			}
 
 			vertices.push_back(vertex);
@@ -84,6 +112,57 @@ namespace Nata
 			}
 		}
 
-		return Mesh(vertices, indices);
+		// process materials
+		if (mesh->mMaterialIndex >= 0) {
+			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+			// Assume a convention for sampler names in the shaders. Each diffuse texture should be named
+			// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.
+			// Same applies to other texture as the following list summarizes:
+			// Diffuse: texture_diffuseN
+			// Specular: texture_specularN
+
+			vector<Texture> diffuseMaps = this->LoadMaterialTextures(material, aiTextureType_DIFFUSE, TEXTURE_DIFFUSE);
+			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+			// Specular maps
+			vector<Texture> specularMaps = this->LoadMaterialTextures(material, aiTextureType_SPECULAR, TEXTURE_SPECULAR);
+			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		}
+
+		this->VertexCount = vertices.size();
+		this->TrisCount = indices.size() / 3;
+
+		return Mesh(vertices, indices, textures);
+	}
+	vector<Texture> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
+	{
+		vector<Texture> textures;
+		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+		{
+			aiString str;
+			mat->GetTexture(type, i, &str);
+
+			bool skip = false;
+			for (unsigned int j = 0; j < TexturesLoaded.size(); j++)
+			{
+				if (strcmp(TexturesLoaded[j].Path.data(), str.C_Str()) == 0)
+				{
+					textures.push_back(TexturesLoaded[j]);
+					skip = true;
+					break;
+				}
+			}
+			if (!skip)
+			{
+				// if textures hasnt been loaded already, load it
+				Texture texture;
+				texture.ID = Texture::LoadFromFile(str.C_Str(), Directory);
+				texture.Type = typeName;
+				texture.Path = str.C_Str();
+				textures.push_back(texture);
+				TexturesLoaded.push_back(texture);
+			}
+		}
+		return textures;
 	}
 }

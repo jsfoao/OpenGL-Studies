@@ -10,27 +10,27 @@ namespace Nata
 
     void Handles::DrawLine(const vec3& start, const vec3& end, const vec3& color)
 	{
-        vector<float> vertices =
-        {
-            // positions               // normals        // texture coords
-            start.x, start.y, start.z, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f,
-            end.x  , end.y  , end.z  , 0.0f, 0.0f, 0.0f, 0.0f,  0.0f,
-        };
+        //vector<float> vertices =
+        //{
+        //    // positions               // normals        // texture coords
+        //    start.x, start.y, start.z, 0.0f, 0.0f, 0.0f, 0.0f,  0.0f,
+        //    end.x  , end.y  , end.z  , 0.0f, 0.0f, 0.0f, 0.0f,  0.0f,
+        //};
 
-        Mesh mesh = Mesh(vertices, N_DRAW_LINES);
+        //Mesh mesh = Mesh(vertices, N_DRAW_LINES);
 
-        shader.Enable();
-        shader.SetUniform3f("color", color);
+        //shader.Enable();
+        //shader.SetUniform3f("color", color);
 
-        shader.SetUniformMat4("view", view);
-        shader.SetUniformMat4("projection", projection);
+        //shader.SetUniformMat4("view", view);
+        //shader.SetUniformMat4("projection", projection);
 
-        mat4 model = mat4(1.0f);
-        model = translate(model, start);
-        shader.SetUniformMat4("model", model);
+        //mat4 model = mat4(1.0f);
+        //model = translate(model, start);
+        //shader.SetUniformMat4("model", model);
 
-        mesh.Draw();
-        shader.Disable();
+        //mesh.Draw();
+        //shader.Disable();
 	}
 
     bool Handles::Init()
@@ -43,5 +43,4 @@ namespace Nata
         this->view = view;
         this->projection = projection;
     }
-
 }

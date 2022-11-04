@@ -16,19 +16,19 @@ namespace Nata
 	class Model
 	{
 	public:
+		vector<Mesh> Meshes;
+		string Directory;
+		vector<Texture> TexturesLoaded;
+
+		unsigned int VertexCount;
+		unsigned int TrisCount;
+
 		Model(string path);
-		void Draw();
+		void Draw(Shader shader);
 
-	public:
-		vector<Mesh> meshes;
-		string directory;
-		bool gammaCorrection;
-
-	private:
 		void Load(string path);
 		void ProcessNode(aiNode* node, const aiScene* scene);
-
-		// Converts assim mesh to mesh
 		Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+		vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 	};
 }

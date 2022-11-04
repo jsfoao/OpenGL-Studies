@@ -9,12 +9,7 @@ namespace Nata
 		m_VertPath = vertPath;
 		m_FragPath = fragPath;
 
-		m_ShaderID = Load();
-	}
-
-	Shader::~Shader()
-	{
-		glDeleteProgram(m_ShaderID);
+		ID = Load();
 	}
 
 	unsigned int Shader::Load()
@@ -78,15 +73,25 @@ namespace Nata
 
 	unsigned int Shader::GetUniformLocation(const char* name)
 	{
-		return glGetUniformLocation(m_ShaderID, name);
+		return glGetUniformLocation(this->ID, name);
 	}
 
-	void Shader::Enable() const
+	void Shader::Enable()
 	{
-		glUseProgram(m_ShaderID);
+		if (glIsProgram(this->ID))
+		{
+			glUseProgram(this->ID);
+		}
+
+		GLenum error = glGetError();
+		if (error != GL_NO_ERROR)
+		{
+			std::cout << "OpenGL::ERROR::SHADER::GLUSEPROGRAM: " << error << std::endl;
+			exit(0);
+		}
 	}
 
-	void Shader::Disable() const
+	void Shader::Disable()
 	{
 		glUseProgram(NULL);
 	}

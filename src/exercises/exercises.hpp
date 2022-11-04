@@ -1821,8 +1821,8 @@ namespace Nata
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
             glEnableVertexAttribArray(2);
 
-            unsigned int diffuseTexture = Texture::Load("res\\container2.png");
-            unsigned int specularTexture = Texture::Load("res\\container2_specular.png");
+            unsigned int diffuseTexture = Texture::LoadFromFile("container2.png", "res");
+            unsigned int specularTexture = Texture::LoadFromFile("container2_specular.png", "res");
 
             shader.Enable();
             shader.SetUniform1i("material.diffuse", 0);
@@ -2069,8 +2069,8 @@ namespace Nata
 
             // load textures (we now use a utility function to keep the code more organized)
             // -----------------------------------------------------------------------------
-            unsigned int diffuseMap = Texture::Load("res\\container2.png");
-            unsigned int specularMap = Texture::Load("res\\container2_specular.png");
+            unsigned int diffuseTexture = Texture::LoadFromFile("container2.png", "res");
+            unsigned int specularTexture = Texture::LoadFromFile("container2_specular.png", "res");
 
             // shader configuration
             // --------------------
@@ -2158,10 +2158,10 @@ namespace Nata
 
                 // bind diffuse map
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, diffuseMap);
+                glBindTexture(GL_TEXTURE_2D, diffuseTexture);
                 // bind specular map
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, specularMap);
+                glBindTexture(GL_TEXTURE_2D, specularTexture);
 
                 // render containers
                 glBindVertexArray(cubeVAO);
@@ -2265,8 +2265,8 @@ namespace Nata
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
             glEnableVertexAttribArray(2);
 
-            unsigned int diffuseTexture = Texture::Load("res\\container2.png");
-            unsigned int specularTexture = Texture::Load("res\\container2_specular.png");
+            unsigned int diffuseTexture = Texture::LoadFromFile("container2.png", "res");
+            unsigned int specularTexture = Texture::LoadFromFile("container2_specular.png", "res");
 
             shader.Enable();
             shader.SetUniform1i("material.diffuse", 0);
@@ -2441,8 +2441,8 @@ namespace Nata
 
             Model ourModel = Model("res\\models\\teapot.obj");
 
-            unsigned int diffuseTexture = Texture::Load("res\\container2.png");
-            unsigned int specularTexture = Texture::Load("res\\container2_specular.png");
+            unsigned int diffuseTexture = Texture::LoadFromFile("container2.png", "res");
+            unsigned int specularTexture = Texture::LoadFromFile("container2_specular.png", "res");
 
             shader.Enable();
             shader.SetUniform1i("material.diffuse", 0);
@@ -2568,7 +2568,7 @@ namespace Nata
                 model = translate(model, position);
                 model = rotate(model, time * rotationSpeed, vec3(0.f, 1.f, 0.f));
                 shader.SetUniformMat4("model", model);
-                ourModel.Draw();
+                ourModel.Draw(shader);
                 shader.Disable();
 
                 win->Update();
@@ -2598,8 +2598,8 @@ namespace Nata
             Shader shader("src\\shaders\\lit.vert", "src\\shaders\\lit.frag");
             Model model = Model("res\\models\\teapot.obj");
 
-            unsigned int diffuseTexture = Texture::Load("res\\container2.png");
-            unsigned int specularTexture = Texture::Load("res\\container2_specular.png");
+            unsigned int diffuseTexture = Texture::LoadFromFile("container2.png", "res");
+            unsigned int specularTexture = Texture::LoadFromFile("container2_specular.png", "res");
 
             shader.Enable();
             shader.SetUniform1i("material.diffuse", 0);
@@ -2732,56 +2732,117 @@ namespace Nata
 
             vector<float> vertices =
             {
-                // positions          // normals           // texture coords
-                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
-
-                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
-
-                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-                -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-
-                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-                 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
-                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
-
-                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
-
-                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
+                // positions          // normals           // tcoords    // tangent           // bitangent
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,  -1.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+                 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,  -1.0f,  1.0f, 0.0f,  1.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,  -1.0f,  1.0f, 1.0f,  1.0f,  1.0f,  1.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,  -1.0f,  1.0f, 1.0f,  1.0f,  1.0f,  1.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,  -1.0f,  0.0f, 1.0f,  1.0f,  0.0f,  1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,  -1.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+                                                                                              
+                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,   1.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,   1.0f,  1.0f, 0.0f,  1.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,   1.0f,  1.0f, 1.0f,  1.0f,  1.0f,  1.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,   1.0f,  1.0f, 1.0f,  1.0f,  1.0f,  1.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,   1.0f,  0.0f, 1.0f,  1.0f,  0.0f,  1.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,   1.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+                                                                                              
+                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,   0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+                -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,   0.0f,  1.0f, 1.0f,  0.0f,  1.0f,  1.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+                -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,   0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  0.0f,
+                -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,   0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+                                                                                              
+                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,   0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,   0.0f,  1.0f, 1.0f,  0.0f,  1.0f,  1.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+                 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+                 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,   0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  0.0f,
+                 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,   0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+                                                                                              
+                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+                 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,   0.0f,  1.0f, 1.0f,  0.0f,  1.0f,  1.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,   0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+                 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,   0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,   0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  0.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+                                                                                              
+                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+                 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,   0.0f,  1.0f, 1.0f,  0.0f,  1.0f,  1.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,   0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+                 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,   0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,   0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  0.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f
             };
+            
+            Shader shader("src\\shaders\\unlit_textured.vert", "src\\shaders\\unlit_textured.frag");
+            Texture texture;
+            texture.ID = Texture::LoadFromFile("container2.png", "res");
+            texture.Type = TEXTURE_DIFFUSE;
+            texture.Path = "container2.png";
+            vector<Texture> textures;
+            textures.push_back(texture);
 
-            Shader shader("src\\shaders\\unlit.vert", "src\\shaders\\unlit.frag");
-            VAO vao;
-            VBO vbo(vertices, 8);
-            vao.AddVBOAttrib(vbo, 3);
-            vao.AddVBOAttrib(vbo, 3);
-            vao.AddVBOAttrib(vbo, 2);
+            Mesh ourMesh = Mesh(vertices, textures);
+            Model ourModel("res\\models\\teapot.obj");
+
+            glEnable(GL_DEPTH_TEST);
+
+            // view and projection matrices
+            mat4 view = mat4(1.0f);
+            mat4 projection;
+            projection = perspective(radians(45.0f), 700.f / 500.f, 0.1f, 100.0f);
+
+            // 1. initial camera settings
+            vec3 camPos = vec3(0.f, 4.f, 4.f);
+            float deltaTime = 0.f;
+            double lastFrame = 0.f;
+
+            const float rotationSpeed = .5f;
+
+            while (!win->Closed())
+            {
+                double currentFrame = glfwGetTime();
+                deltaTime = currentFrame - lastFrame;
+                lastFrame = currentFrame;
+
+                win->Clear();
+
+                float time = (float)glfwGetTime();
+
+                vec3 camForward = vec3(0.f, -1.f, -1.f);
+                vec3 camRight = glm::normalize(glm::cross(vec3(0.f, 1.f, 0.f), camForward));
+                vec3 camUp = glm::cross(camForward, camRight);
+                view = lookAt(camPos, camPos + camForward, camUp);
+
+                // transformations
+                shader.Enable();
+                shader.SetUniformMat4("view", view);
+                shader.SetUniformMat4("projection", projection);
+
+                vec3 position = vec3(0.f, 0.f, 0.f);
+                mat4 model = mat4(1.0f);
+                model = translate(model, position);
+                model = rotate(model, time * rotationSpeed, vec3(0.f, 1.f, 0.f));
+                shader.SetUniformMat4("model", model);
+                shader.Disable();
+
+                //ourMesh.DrawArrays(shader);
+                ourModel.Draw(shader);
+
+                win->Update();
+            }
+            return 0;
+        }
+
+        int Renderer_2()
+        {
+            Window* win = new Window("OpenGL Studies", 700, 500);
+            Input* input = win->GetInput();
+
+            Shader shader("src\\shaders\\unlit_textured.vert", "src\\shaders\\unlit_textured.frag");
+            Model ourModel("res\\models\\teapot.obj");
 
             glEnable(GL_DEPTH_TEST);
 
@@ -2813,21 +2874,18 @@ namespace Nata
                 view = lookAt(camPos, camPos + camForward, camUp);
 
                 // transformations
-                vao.Bind();
                 shader.Enable();
                 shader.SetUniformMat4("view", view);
                 shader.SetUniformMat4("projection", projection);
                 shader.SetUniform3f("color", vec3(1.f, 1.f, 1.f));
-
                 vec3 position = vec3(0.f, 0.f, 0.f);
                 mat4 model = mat4(1.0f);
                 model = translate(model, position);
                 model = rotate(model, time * rotationSpeed, vec3(0.f, 1.f, 0.f));
                 shader.SetUniformMat4("model", model);
-
-                glDrawArrays(GL_TRIANGLES, 0, 36);
                 shader.Disable();
-                vao.Unbind();
+
+                ourModel.Draw(shader);
 
                 win->Update();
             }

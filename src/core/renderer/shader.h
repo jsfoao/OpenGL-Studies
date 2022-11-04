@@ -15,8 +15,10 @@ namespace Nata
 {
 	class Shader
 	{
+	public:
+		unsigned int ID;
+
 	private:
-		unsigned int m_ShaderID;
 		const char* m_VertPath;
 		const char* m_FragPath;
 
@@ -24,18 +26,17 @@ namespace Nata
 		// Creates and loads
 		Shader();
 		Shader(const char* vertPath, const char* fragPath);
-		~Shader();
 
 		/// <summary>
 		/// Equivalent to glUseProgram(this)
 		/// </summary>
-		void Enable() const;
+		void Enable();
 
 		/// <summary>
 		/// Equivalent to glUseProgram(NULL)
 		/// </summary>
-		void Disable() const;
-		inline unsigned int GetID() { return m_ShaderID; }
+		void Disable();
+		inline unsigned int GetID() { return ID; }
 
 
 		void SetUniform1i(const char* name, int value);
