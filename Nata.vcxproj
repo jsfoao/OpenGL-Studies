@@ -102,6 +102,7 @@
     <ClCompile Include="src\core\editor\editor.cpp" />
     <ClCompile Include="src\core\input.cpp" />
     <ClCompile Include="src\core\renderer\buffer.cpp" />
+    <ClCompile Include="src\core\renderer\camera.cpp" />
     <ClCompile Include="src\core\renderer\mesh.cpp" />
     <ClCompile Include="src\core\renderer\model.cpp" />
     <ClCompile Include="src\core\renderer\renderable.cpp" />
@@ -1077,6 +1078,7 @@
     <ClInclude Include="src\core\input.h" />
     <ClInclude Include="src\core\key.h" />
     <ClInclude Include="src\core\renderer\buffer.h" />
+    <ClInclude Include="src\core\renderer\camera.h" />
     <ClInclude Include="src\core\renderer\mesh.h" />
     <ClInclude Include="src\core\renderer\model.h" />
     <ClInclude Include="src\core\renderer\renderable.h" />
@@ -1263,6 +1265,8 @@
     <None Include="src\shaders\test2.frag" />
     <None Include="src\shaders\transform.frag" />
     <None Include="src\shaders\transform.vert" />
+    <None Include="src\shaders\unlit_textured.frag" />
+    <None Include="src\shaders\unlit_textured.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

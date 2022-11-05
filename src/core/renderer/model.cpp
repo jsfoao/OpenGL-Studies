@@ -155,10 +155,7 @@ namespace Nata
 			if (!skip)
 			{
 				// if textures hasnt been loaded already, load it
-				Texture texture;
-				texture.ID = Texture::LoadFromFile(str.C_Str(), Directory);
-				texture.Type = typeName;
-				texture.Path = str.C_Str();
+				Texture texture(str.C_Str(), Directory, typeName);
 				textures.push_back(texture);
 				TexturesLoaded.push_back(texture);
 			}

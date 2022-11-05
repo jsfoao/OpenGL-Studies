@@ -25,6 +25,13 @@ namespace Nata
 
 		Model(string path);
 		void Draw(Shader shader);
+		void AddTexture(Texture texture)
+		{
+			for (unsigned int i = 0; i < Meshes.size(); i++)
+			{
+				Meshes[i].AddTexture(texture);
+			}
+		}
 
 		void Load(string path);
 		void ProcessNode(aiNode* node, const aiScene* scene);

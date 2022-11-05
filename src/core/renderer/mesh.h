@@ -44,6 +44,10 @@ namespace Nata
 		void BindResources(Shader shader);
 		void Draw(Shader shader);
 		void DrawArrays(Shader shader);
+		void AddTexture(Texture texture)
+		{
+			textures.push_back(texture);
+		}
 		
 
 	private:

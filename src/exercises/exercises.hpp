@@ -2775,18 +2775,10 @@ namespace Nata
                 -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,   0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  0.0f,
                 -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,   0.0f,  0.0f, 1.0f,  0.0f,  0.0f,  1.0f
             };
-            
-            Shader shader("src\\shaders\\unlit.vert", "src\\shaders\\unlit.frag");
+            Shader shader("src\\shaders\\unlit_textured.vert", "src\\shaders\\unlit_textured.frag");
+            Texture texture("container2.png", "res", TEXTURE_DIFFUSE);
             Model ourModel("res\\models\\teapot.obj");
-
-            //Texture texture;
-            //texture.ID = Texture::LoadFromFile("container2.png", "res");
-            //texture.Type = TEXTURE_DIFFUSE;
-            //texture.Path = "container2.png";
-            //vector<Texture> textures;
-            //textures.push_back(texture);
-
-            //Mesh ourMesh = Mesh(vertices, textures);
+            ourModel.AddTexture(texture);
 
             glEnable(GL_DEPTH_TEST);
 

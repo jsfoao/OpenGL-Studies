@@ -19,7 +19,9 @@ namespace Nata
 		unsigned int ID;
 		string Type;
 		string Path;
-		
+
+	public:
+		Texture(const char* path, string directory, string type = TEXTURE_DIFFUSE);
 		static int LoadFromFile(const char* path, string directory);
 	};
 }
