@@ -10,7 +10,7 @@ namespace Nata
 		this->UpdateCameraVectors();
 	}
 
-	void Camera::Update()
+	void Camera::Tick()
 	{
 		// camera behaviour, movement and such
 	}

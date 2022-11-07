@@ -61,7 +61,7 @@ namespace Nata
 	public:
 		Camera(vec3 position = vec3(0.f), vec3 up = vec3(0.f, 1.f, 0.f), Rotator rotation = Rotator(PITCH, YAW, ROLL));
 		
-		void Update();
+		void Tick();
 		mat4 GetViewMatrix();
 
 	private:
