@@ -10,7 +10,7 @@ namespace Nata
 	class Buffer
 	{
 	public:
-		Buffer(){ ID = 0; };
+		Buffer(){ m_ID = 0; };
 
 		~Buffer(){};
 		
@@ -18,7 +18,7 @@ namespace Nata
 		virtual void Unbind() = 0;
 
 	protected:
-		unsigned int ID;
+		unsigned int m_ID;
 	};
 
 	class VBO : Buffer
@@ -28,7 +28,7 @@ namespace Nata
 
 		void Bind();
 		void Unbind();
-		unsigned int GetID() const { return ID; };
+		unsigned int GetID() const { return m_ID; };
 	};
 
 	class IBO : Buffer
@@ -106,6 +106,6 @@ namespace Nata
 		void AddBuffer(VBO& vbo, const VAOAttribLayout& layout);
 
 	protected:
-		unsigned int ID;
+		unsigned int m_ID;
 	};
 }

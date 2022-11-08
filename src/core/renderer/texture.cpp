@@ -4,7 +4,7 @@ namespace Nata
 {
     Texture::Texture(const char* path, string directory, string type)
     {
-        this->ID = LoadFromFile(path, directory);
+        this->m_ID = LoadFromFile(path, directory);
         this->Type = type;
         this->Path = path;
     }

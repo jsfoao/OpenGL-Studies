@@ -66,7 +66,7 @@ namespace Nata
 				continue;
 			}
 			shader.SetUniform1i((name + number).c_str(), i);
-			glBindTexture(GL_TEXTURE_2D, this->textures[i].ID);
+			glBindTexture(GL_TEXTURE_2D, this->textures[i].m_ID);
 		}
 	}
 

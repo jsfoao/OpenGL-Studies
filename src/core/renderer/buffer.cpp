@@ -4,7 +4,7 @@ namespace Nata
 {
 	VBO::VBO(const void* data, unsigned int size)
 	{
-		glGenBuffers(1, &ID);
+		glGenBuffers(1, &m_ID);
 		Bind();
 		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 		Unbind();
@@ -12,7 +12,7 @@ namespace Nata
 
 	void VBO::Bind()
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, ID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 	}
 
 	void VBO::Unbind()
@@ -22,7 +22,7 @@ namespace Nata
 
 	IBO::IBO(const unsigned int* data, const unsigned int count)
 	{
-		glGenBuffers(1, &ID);
+		glGenBuffers(1, &m_ID);
 		Bind();
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
 		Unbind();
@@ -30,7 +30,7 @@ namespace Nata
 
 	void IBO::Bind()
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 	}
 
 	void IBO::Unbind()
@@ -40,17 +40,17 @@ namespace Nata
 
 	VAO::VAO()
 	{
-		glGenVertexArrays(1, &ID);
+		glGenVertexArrays(1, &m_ID);
 	}
 
 	VAO::~VAO()
 	{
-		glDeleteVertexArrays(1, &ID);
+		glDeleteVertexArrays(1, &m_ID);
 	}
 
 	void VAO::Bind()
 	{
-		glBindVertexArray(ID);
+		glBindVertexArray(m_ID);
 	}
 
 	void VAO::Unbind()

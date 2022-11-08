@@ -9,7 +9,7 @@ namespace Nata
 		m_VertPath = vertPath;
 		m_FragPath = fragPath;
 
-		ID = Load();
+		m_ID = Load();
 	}
 
 	unsigned int Shader::Load()
@@ -73,14 +73,14 @@ namespace Nata
 
 	unsigned int Shader::GetUniformLocation(const char* name)
 	{
-		return glGetUniformLocation(this->ID, name);
+		return glGetUniformLocation(this->m_ID, name);
 	}
 
 	void Shader::Enable()
 	{
-		if (glIsProgram(this->ID))
+		if (glIsProgram(this->m_ID))
 		{
-			glUseProgram(this->ID);
+			glUseProgram(this->m_ID);
 		}
 
 		GLenum error = glGetError();

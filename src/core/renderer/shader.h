@@ -16,7 +16,7 @@ namespace Nata
 	class Shader
 	{
 	public:
-		unsigned int ID;
+		unsigned int m_ID;
 
 	private:
 		const char* m_VertPath;
@@ -36,7 +36,7 @@ namespace Nata
 		/// Equivalent to glUseProgram(NULL)
 		/// </summary>
 		void Disable();
-		inline unsigned int GetID() { return ID; }
+		inline unsigned int GetID() { return m_ID; }
 
 
 		void SetUniform1i(const char* name, int value);

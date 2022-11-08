@@ -4,66 +4,66 @@
 
 using namespace std;
 
-class NActor;
-class NComponent;
-class Transform;
-
 namespace Nata
 {
-	class NObject
+
+	class World;
+	class Entity;
+	class Component;
+
+	class Component
 	{
+	private:
+		Entity* m_Owner;
 
-	};
-
-	class NActor
-	{
-	public:
-		vector<NComponent*> Components;
-
-	public:
-		NActor();
-		~NActor()
+	public: 
+		Component(Entity* owner)
 		{
-			for (size_t i = 0; i < Components.size(); i++)
-			{
-				delete Components[i];
-			}
+			m_Owner = owner;
+		}
+
+		Entity* GetOwner()
+		{
+			return m_Owner;
 		}
 
 		virtual void Begin();
 		virtual void Tick();
+	};
 
-		template <typename T>
-		T* AddComponent()
+	class Entity
+	{
+	private:
+		World* m_World;
+		vector<Component*> m_Components;
+
+	public:
+		Entity(World* world)
 		{
-			T* comp = new T();
-			comp->Owner = this;
-			Components.push_back(comp);
+			m_World = world;
 		}
 
-		template <typename T>
+		World* GetWorld()
+		{
+			return m_World;
+		}
+
+		template<typename T, class = typename std::enable_if<std::is_base_of<Component, T>::value>::type>
+		Component* AddComponent()
+		{
+			Component* newComp = new T();
+			m_Components.push_back(newComp);
+			return newComp;
+		}
+
+		template<typename T>
 		T* GetComponent()
 		{
-			for (NComponent* component : Components)
-			{
-				if (typeid(*component).name() == typeid(T).name())
-				{
-					return (T*)component;
-				}
-			}
 		}
-	};
-
-	class NComponent
-	{
-	public:
-		NActor* Owner;
-
-	public:
-		NComponent();
-		~NComponent();
 
 		virtual void Begin();
 		virtual void Tick();
+		virtual void OnDestroy();
 	};
-}
+
+} 

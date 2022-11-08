@@ -16,7 +16,7 @@ namespace Nata
 	class Texture
 	{
 	public:
-		unsigned int ID;
+		unsigned int m_ID;
 		string Type;
 		string Path;
 
