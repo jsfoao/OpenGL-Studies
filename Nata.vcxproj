@@ -99,7 +99,6 @@
     <ClCompile Include="include\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\core\components\components.cpp" />
     <ClCompile Include="src\core\ecs.cpp" />
     <ClCompile Include="src\core\editor\editor.cpp" />
     <ClCompile Include="src\core\input.cpp" />
@@ -1074,9 +1073,12 @@
     <ClInclude Include="include\imgui\imstb_textedit.h" />
     <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\stb_image.h" />
-    <ClInclude Include="src\core\components\components.h" />
     <ClInclude Include="src\core\core.h" />
     <ClInclude Include="src\core\ecs.h" />
+    <ClInclude Include="src\core\ecs\component.hpp" />
+    <ClInclude Include="src\core\ecs\ecs.h" />
+    <ClInclude Include="src\core\ecs\entity.hpp" />
+    <ClInclude Include="src\core\ecs\world.hpp" />
     <ClInclude Include="src\core\editor\editor.h" />
     <ClInclude Include="src\core\glm_math.h" />
     <ClInclude Include="src\core\input.h" />

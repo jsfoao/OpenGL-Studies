@@ -16,6 +16,8 @@ namespace Nata
 	private:
 		Entity* m_Owner;
 
+		friend class Entity;
+
 	public: 
 		Component(Entity* owner)
 		{
@@ -49,9 +51,10 @@ namespace Nata
 		}
 
 		template<typename T, class = typename std::enable_if<std::is_base_of<Component, T>::value>::type>
-		Component* AddComponent()
+		T* AddComponent()
 		{
-			Component* newComp = new T();
+			T* newComp = new T();
+			newComp->m_Owner = this;
 			m_Components.push_back(newComp);
 			return newComp;
 		}
@@ -59,6 +62,13 @@ namespace Nata
 		template<typename T>
 		T* GetComponent()
 		{
+			for (Component* comp : m_Components)
+			{
+				if (typeid(*comp).name() == typeid(T).name())
+				{
+					return (T*)comp;
+				}
+			}
 		}
 
 		virtual void Begin();
