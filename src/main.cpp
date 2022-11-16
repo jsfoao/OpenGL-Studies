@@ -25,7 +25,13 @@ int main(int argc, char** argv)
     projection = perspective(radians(45.0f), 700.f / 500.f, 0.1f, 100.0f);
 
     // 1. initial camera settings
-    vec3 camPos = vec3(0.f, 4.f, 4.f);
+    const float camSpeed = 2.f;
+    const float camSens = 1.f;
+    float pitch = 0.f;
+    float yaw = -90.f;
+    vec3 camPos = vec3(0.f, 0.f, 3.f);
+
+    vec2 lastMousePos = vec2(0.f, 0.f);
     float deltaTime = 0.f;
     double lastFrame = 0.f;
 
@@ -37,8 +43,11 @@ int main(int argc, char** argv)
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        win->Clear();
+        vec2 mousePos = input->GetMousePos();
+        vec2 mouseDelta = vec2(mousePos.x - lastMousePos.x, mousePos.y - lastMousePos.y);
+        lastMousePos = mousePos;
 
+        win->Clear();
         float time = (float)glfwGetTime();
 
         vec3 pointLightPositions[] =
@@ -47,7 +56,7 @@ int main(int argc, char** argv)
             vec3(-1.f, 1.f, 0.f)
         };
 
-        float lightIntensity = (sin(glfwGetTime()) + 1) * 2.f;
+        float lightIntensity = (sin(time) + 1) * 2.f;
         vec3 pointLightColors[] =
         {
             vec3(1.f, 0.f, 0.f) * lightIntensity,
@@ -55,10 +64,31 @@ int main(int argc, char** argv)
         };
 
         // camera
-        vec3 camForward = vec3(0.f, -1.f, -1.f);
+        vec3 camForward;
+        camForward.x = cos(yaw) * cos(pitch);
+        camForward.y = sin(pitch);
+        camForward.z = sin(yaw) * cos(pitch);
+        camForward = normalize(camForward);
         vec3 camRight = glm::normalize(glm::cross(vec3(0.f, 1.f, 0.f), camForward));
         vec3 camUp = glm::cross(camForward, camRight);
         view = lookAt(camPos, camPos + camForward, camUp);
+
+        if (input->GetKeyDown(GLFW_KEY_W))
+        {
+            camPos += camSpeed * camForward * deltaTime;
+        }
+        if (input->GetKeyDown(GLFW_KEY_S))
+        {
+            camPos -= camSpeed * camForward * deltaTime;
+        }
+        if (input->GetKeyDown(GLFW_KEY_A))
+        {
+            camPos += camSpeed * camRight * deltaTime;
+        }
+        if (input->GetKeyDown(GLFW_KEY_D))
+        {
+            camPos -= camSpeed * camRight * deltaTime;
+        }
 
         // camera transformations
         shader.Enable();
