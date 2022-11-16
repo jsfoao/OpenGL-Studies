@@ -1,4 +1,5 @@
 # OpenGL Studies
+This repo contains a collection of studies on OpenGL for 3D applications and it can be used as a base for a more complex rendering engine. It covers model loading, handling input, lighting, rendering abstractions and more.
 ![Demo](/docs/demo.gif  "Demo")
 
 ## Highlights
